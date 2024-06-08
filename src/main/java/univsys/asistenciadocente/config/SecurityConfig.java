@@ -1,8 +1,12 @@
 package univsys.asistenciadocente.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,10 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import univsys.asistenciadocente.service.UserDetailsServiceImpl;
+
+import java.util.Arrays;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -28,19 +37,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/v1/index2","/createUser").permitAll() //acceso público
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Requiere rol "ADMIN" para /admin/**
-                        .anyRequest().authenticated()
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().permitAll()
                 )
-                .formLogin(form -> form
-                        .successHandler(successHandler())
-                )
+                //.formLogin(form -> form.successHandler(successHandler()) )
+                .formLogin(Customizer.withDefaults())
                 .sessionManagement((sessionManagement)-> sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                                //.invalidSessionUrl("/login")
-                                //.maximumSessions(1)
-                                //.expiredUrl("/login")
+                                /*.invalidSessionUrl("/login")
+                                .maximumSessions(1)
+                                .expiredUrl("/login")*/
                 )
-                //.csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults()) // Configuración para autenticación básica
+                //.httpBasic(Customizer.withDefaults()) // Configuración para autenticación básica
                 .build();
     }
     public AuthenticationSuccessHandler successHandler() {
@@ -49,10 +58,8 @@ public class SecurityConfig {
 
 
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+
 /*
    UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
@@ -62,13 +69,32 @@ public class SecurityConfig {
                 .roles()
                 .build());
         return manager;
-    }
-    @Bean
+    }*/
+    /*@Bean
     AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManager XXX = new AuthenticationManager() {}
     return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService())
+            .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder)
             .build();
+    }*/
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
-     */
+    @Bean
+    AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return daoAuthenticationProvider;
+    }
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return new ProviderManager(Arrays.asList(daoAuthenticationProvider));
+    }
+
 }
