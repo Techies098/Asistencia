@@ -20,6 +20,4 @@ public class FacultadEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "facultad")
-    private List<CarreraEntity> carreras;
 }

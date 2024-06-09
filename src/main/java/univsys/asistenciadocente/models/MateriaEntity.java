@@ -23,7 +23,5 @@ public class MateriaEntity {
     private String name;
     @NotBlank
     private String sigla;
-    @OneToMany(mappedBy = "materia")
-    private List<CarreraMateriaEntity> carreras;
 
 }

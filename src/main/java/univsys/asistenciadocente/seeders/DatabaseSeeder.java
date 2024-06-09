@@ -4,19 +4,20 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import univsys.asistenciadocente.models.CarreraEntity;
 import univsys.asistenciadocente.models.FacultadEntity;
 import univsys.asistenciadocente.models.RoleEntity;
 import univsys.asistenciadocente.models.UserEntity;
+import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.FacultadRepository;
 import univsys.asistenciadocente.repositories.RoleRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DatabaseSeeder {
@@ -27,6 +28,8 @@ public class DatabaseSeeder {
     private RoleRepository roleRepository;
     @Autowired
     private FacultadRepository facultadRepository;
+    @Autowired
+    private CarreraRepository carreraRepository;
 
     @EventListener
     @Transactional
@@ -34,6 +37,32 @@ public class DatabaseSeeder {
         seedFacultades();
         seedRoleTable();
         seedUsersTable();
+        seedCarreras();
+    }
+
+    public void seedCarreras() {
+        carreraseed("Sistemas", "INF-204", 5L);
+        carreraseed("Redes", "INF-205", 5L);
+        carreraseed("Informatica", "INF-206", 5L);
+        carreraseed("Industrial", "IND-102", 2L);
+        carreraseed("Alimentos", "ALM-200", 2L);
+        carreraseed("Electronica", "ELE-201", 2L);
+        carreraseed("Contaduria", "CON-300", 1L);
+        carreraseed("Medicina", "MED-207", 3L);
+        carreraseed("Enfermeria", "ENF-208", 3L);
+        carreraseed("Psicologia", "PSY-209", 4L);
+        carreraseed("Derecho", "DER-255", 6L);
+    }
+
+    private void carreraseed(String nombreCarrera, String siglaCarrera, Long idFacultad) {
+        Optional<FacultadEntity> facultad = facultadRepository.findById(idFacultad);
+        if (facultad.isPresent()) {
+            CarreraEntity carre = new CarreraEntity();
+            carre.setName(nombreCarrera);
+            carre.setSigla(siglaCarrera);
+            carre.setFacultad(facultad.get());
+            carreraRepository.save(carre);
+        }
     }
     public void seedFacultades() {
         List<String> nombresFacultades = new ArrayList<>();
@@ -106,8 +135,6 @@ public class DatabaseSeeder {
             user.setActive(true);
             userRepository.save(user);
         }
-
     }
-
 }
 

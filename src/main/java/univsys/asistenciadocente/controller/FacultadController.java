@@ -1,5 +1,6 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class FacultadController {
         this.facultadRepository = facultadRepository;
     }
 
+    @Transactional
     @PostMapping("/store")
     public ResponseEntity<FacultadEntity> crearFacultad(@RequestBody FacultadEntity facultad) {
         FacultadEntity nuevaFacultad = facultadRepository.save(facultad);

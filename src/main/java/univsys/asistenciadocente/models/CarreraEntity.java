@@ -23,10 +23,7 @@ public class CarreraEntity {
     private String name;
     @NotBlank
     private String sigla;
-    @OneToMany(mappedBy = "carrera")
-    private List<CarreraMateriaEntity> materias;
     @ManyToOne
     @JoinColumn(name = "facultad_id")
     private FacultadEntity facultad;
-
 }
