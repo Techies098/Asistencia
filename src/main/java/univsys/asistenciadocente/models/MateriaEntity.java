@@ -22,6 +22,6 @@ public class MateriaEntity {
     @NotBlank
     private String name;
     @NotBlank
+    @Column(unique = true)
     private String sigla;
-
 }

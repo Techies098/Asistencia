@@ -22,6 +22,7 @@ public class CarreraEntity {
     @NotBlank
     private String name;
     @NotBlank
+    @Column(unique = true)
     private String sigla;
     @ManyToOne
     @JoinColumn(name = "facultad_id")

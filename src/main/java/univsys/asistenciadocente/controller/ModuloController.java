@@ -56,12 +56,9 @@ public class ModuloController {
             response.put("fecha", LocalDate.now());
             response.put("aulas", aulas);
             response.put("modulo", modulo);
+            return ResponseEntity.ok(response);
         } else {
-            response.put("status code", "404");
-            response.put("mensaje", "Módulo no encontrado");
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(response);
     }
-
-
 }

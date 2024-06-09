@@ -17,7 +17,6 @@ public class CarreraMateriaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private int nivel;
     @ManyToOne
     @JoinColumn(name = "carrera_id")

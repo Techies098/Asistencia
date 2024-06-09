@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.CarreraEntity;
+import univsys.asistenciadocente.models.CarreraMateriaEntity;
 import univsys.asistenciadocente.models.FacultadEntity;
+import univsys.asistenciadocente.models.MateriaEntity;
+import univsys.asistenciadocente.repositories.CarreraMateriaRepository;
 import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.FacultadRepository;
 
@@ -15,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/carrera")
@@ -23,6 +27,8 @@ public class CarreraController {
     private FacultadRepository facultadRepository;
     @Autowired
     private CarreraRepository carreraRepository;
+    @Autowired
+    private CarreraMateriaRepository carreraMateriaRepository;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> list() {
@@ -54,5 +60,31 @@ public class CarreraController {
                 }
         }
     */
+    @GetMapping("/{sigla}")
+    public ResponseEntity<Map<String, Object>> show(@PathVariable String sigla) {
+        CarreraEntity carrera = carreraRepository.findBySigla(sigla);
+        if (carrera != null) {
+            List<CarreraMateriaEntity> carreraMaterias = carreraMateriaRepository.findByCarrera(carrera);
+            List<Map<String, Object>> materiasConNivel = carreraMaterias.stream()
+                    .map(cm -> {
+                        Map<String, Object> materiaInfo = new HashMap<>();
+                        materiaInfo.put("materia", cm.getMateria());
+                        materiaInfo.put("nivel", cm.getNivel());
+                        return materiaInfo;
+                    })
+                    .collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status code", "200");
+            response.put("mensaje", "Detalles de la carrera y sus materias");
+            response.put("fecha", LocalDate.now());
+            response.put("carrera", carrera);
+            response.put("materias", materiasConNivel);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
 

@@ -28,6 +28,8 @@ public class DatabaseSeeder {
     private ModuloRepository moduloRepository;
     @Autowired
     private AulaRepository aulaRepository;
+    @Autowired
+    private CarreraMateriaRepository carreraMateriaRepository;
 
     @EventListener
     @Transactional
@@ -39,6 +41,8 @@ public class DatabaseSeeder {
         SeedMaterias();
         seedModulos();
         seedAulas();
+        CarreraMateriaSeeder();
+
 
     }
     public void seedAulas() {
@@ -72,6 +76,36 @@ public class DatabaseSeeder {
         moduloSeed(237);
         moduloSeed(666);
     }
+    public void CarreraMateriaSeeder() {
+        for (int i = 1; i < 17; i++) {
+            Long materia = (long ) i;
+            carreraMateriaSeed(1+i/5,1L,materia);
+            carreraMateriaSeed(1+i/5,2L,materia);
+            carreraMateriaSeed(1+i/5,3L,materia);
+        }
+        for (int i = 1; i < 11; i++) {
+            Long materia = (long ) i +16;
+            carreraMateriaSeed(1+i/5,4L,materia);
+            carreraMateriaSeed(1+i/5,5L,materia);
+            carreraMateriaSeed(1+i/5,6L,materia);
+        }
+    }
+    private void carreraMateriaSeed(int nivel, Long carreraId, Long materiaId) {
+        CarreraMateriaEntity carreraMateria = new CarreraMateriaEntity();
+        // Obtener las entidades de carrera y materia por sus IDs (usando tus repositorios)
+        try {
+            Optional<CarreraEntity> carrera = carreraRepository.findById(carreraId);
+            Optional<MateriaEntity> materia = materiaRepository.findById(materiaId);
+            carreraMateria.setCarrera(carrera.get());
+            carreraMateria.setMateria(materia.get());
+            carreraMateria.setNivel(nivel);
+            carreraMateriaRepository.save(carreraMateria);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     private void moduloSeed(int num) {
         ModuloEntity mod = new ModuloEntity();
@@ -93,7 +127,7 @@ public class DatabaseSeeder {
         materiaseed("Arq. de Computadoras","INF-211");
         materiaseed("Programacion II","INF-210");
         materiaseed("Programacion I","INF-120");
-        materiaseed("Programacion Ensamblador","INF-211");
+        materiaseed("Programacion Ensamblador","INF-333");
         materiaseed("Estructuras de Datos I","INF-220");
         materiaseed("Estructuras de Datos II","INF-310");
     //industrial
