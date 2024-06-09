@@ -1,10 +1,9 @@
 package univsys.asistenciadocente.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.FacultadEntity;
 import univsys.asistenciadocente.repositories.FacultadRepository;
 
@@ -28,6 +27,23 @@ public class FacultadController {
         response.put("data", facultades);
         return ResponseEntity.ok(response);
     }
+
+    @Autowired
+    public FacultadController(FacultadRepository facultadRepository) {
+        this.facultadRepository = facultadRepository;
+    }
+
+    @PostMapping("/store")
+    public ResponseEntity<FacultadEntity> crearFacultad(@RequestBody FacultadEntity facultad) {
+        FacultadEntity nuevaFacultad = facultadRepository.save(facultad);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaFacultad);
+    }
+    /* esperado :
+    {
+  "name": "Facultad de Ciencias",
+  "carreras": []
+    }
+    */
 
 
 
