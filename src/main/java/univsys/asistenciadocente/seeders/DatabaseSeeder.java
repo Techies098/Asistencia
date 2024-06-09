@@ -28,6 +28,8 @@ public class DatabaseSeeder {
     private MateriaRepository materiaRepository;
     @Autowired
     private ModuloRepository moduloRepository;
+    @Autowired
+    private AulaRepositry aulaRepositry;
 
     @EventListener
     @Transactional
@@ -38,7 +40,26 @@ public class DatabaseSeeder {
         seedCarreras();
         SeedMaterias();
         seedModulos();
+        seedAulas();
 
+    }
+    public void seedAulas() {
+        for (Long moduloId = 1L; moduloId <= 10L; moduloId++) {
+            for (int aulaNumero = 1; aulaNumero <= 24; aulaNumero++) {
+                aulaSeed(aulaNumero,moduloId);
+            }
+        }
+    }
+
+
+    private void aulaSeed(int numero, Long idModulo) {
+        Optional<ModuloEntity> modulo = moduloRepository.findById(idModulo);
+        if (modulo.isPresent()) {
+            AulaEntity aula = new AulaEntity();
+            aula.setNumero(numero);
+            aula.setModulo(modulo.get());
+            aulaRepositry.save(aula);
+        }
     }
     public void seedModulos() {
         moduloSeed(220);
@@ -53,6 +74,7 @@ public class DatabaseSeeder {
         moduloSeed(237);
 
     }
+
     private void moduloSeed(int num) {
         ModuloEntity mod = new ModuloEntity();
         mod.setNumero(num);
