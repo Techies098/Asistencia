@@ -8,14 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import univsys.asistenciadocente.models.CarreraEntity;
-import univsys.asistenciadocente.models.FacultadEntity;
-import univsys.asistenciadocente.models.RoleEntity;
-import univsys.asistenciadocente.models.UserEntity;
-import univsys.asistenciadocente.repositories.CarreraRepository;
-import univsys.asistenciadocente.repositories.FacultadRepository;
-import univsys.asistenciadocente.repositories.RoleRepository;
-import univsys.asistenciadocente.repositories.UserRepository;
+import univsys.asistenciadocente.models.*;
+import univsys.asistenciadocente.repositories.*;
 
 import java.util.*;
 
@@ -30,6 +24,8 @@ public class DatabaseSeeder {
     private FacultadRepository facultadRepository;
     @Autowired
     private CarreraRepository carreraRepository;
+    @Autowired
+    private MateriaRepository materiaRepository;
 
     @EventListener
     @Transactional
@@ -38,6 +34,45 @@ public class DatabaseSeeder {
         seedRoleTable();
         seedUsersTable();
         seedCarreras();
+        SeedMaterias();
+
+    }
+    public void SeedMaterias () {
+        //Sistemas
+        materiaseed("Calculo I","MAT-101");
+        materiaseed("Calculo II","MAT-102");
+        materiaseed("Ecuaciones Dif.","MAT-207");
+        materiaseed("Introduccion a la informatica","INF-110");
+        materiaseed("Fisica I","FIS-100");
+        materiaseed("Fisica II","FIS-102");
+        materiaseed("Fisica III","FIS-300");
+        materiaseed("Ingles I","LIN-100");
+        materiaseed("Ingles II","LIN-101");
+        materiaseed("Administracion","ADM-100");
+        materiaseed("Arq. de Computadoras","INF-211");
+        materiaseed("Programacion II","INF-210");
+        materiaseed("Programacion I","INF-120");
+        materiaseed("Programacion Ensamblador","INF-211");
+        materiaseed("Estructuras de Datos I","INF-220");
+        materiaseed("Estructuras de Datos II","INF-310");
+    //industrial
+        materiaseed("Algebra I","MAT-100");
+        materiaseed("Dibujo Tecnico I","MEC-101");
+        materiaseed("Dibujo Tecnico II","MEC-103");
+        materiaseed("Quimica General","QMC-100");
+        materiaseed("Quimica Organica I","QMC-200");
+        materiaseed("Fisico-Quimica I","QMC-206");
+        materiaseed("Probabilidad y Estadistica","IND-110");
+        materiaseed("Informatica I","INF-243");
+        materiaseed("teoria de Circuitos I","ELT-211");
+        materiaseed("teoria de Circuitos II","ELT-311");
+    }
+
+    private void materiaseed(String nombreMateria, String siglaMateria) {
+        MateriaEntity materia = new MateriaEntity();
+        materia.setName(nombreMateria);
+        materia.setSigla(siglaMateria);
+        materiaRepository.save(materia);
     }
 
     public void seedCarreras() {
