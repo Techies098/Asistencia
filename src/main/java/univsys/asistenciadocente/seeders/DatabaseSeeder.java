@@ -26,6 +26,8 @@ public class DatabaseSeeder {
     private CarreraRepository carreraRepository;
     @Autowired
     private MateriaRepository materiaRepository;
+    @Autowired
+    private ModuloRepository moduloRepository;
 
     @EventListener
     @Transactional
@@ -35,7 +37,26 @@ public class DatabaseSeeder {
         seedUsersTable();
         seedCarreras();
         SeedMaterias();
+        seedModulos();
 
+    }
+    public void seedModulos() {
+        moduloSeed(220);
+        moduloSeed(221);
+        moduloSeed(222);
+        moduloSeed(232);
+        moduloSeed(223);
+        moduloSeed(224);
+        moduloSeed(225);
+        moduloSeed(226);
+        moduloSeed(236);
+        moduloSeed(237);
+
+    }
+    private void moduloSeed(int num) {
+        ModuloEntity mod = new ModuloEntity();
+        mod.setNumero(num);
+        moduloRepository.save(mod);
     }
     public void SeedMaterias () {
         //Sistemas
