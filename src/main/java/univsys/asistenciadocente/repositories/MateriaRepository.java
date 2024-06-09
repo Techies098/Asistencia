@@ -6,4 +6,5 @@ import univsys.asistenciadocente.models.MateriaEntity;
 
 @Repository
 public interface MateriaRepository extends CrudRepository<MateriaEntity,Long> {
+    MateriaEntity findByname(String name);
 }
