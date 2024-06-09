@@ -1,7 +1,7 @@
 package univsys.asistenciadocente.models;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "facultades")
-public class FacultadEntity {
+@Table(name = "materias")
+public class MateriaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String name;
-    @OneToMany(mappedBy = "facultad")
-    private List<CarreraEntity> carreras;
+    @NotBlank
+    private String sigla;
+    @OneToMany(mappedBy = "materia")
+    private List<CarreraMateriaEntity> carreras;
+
 }
