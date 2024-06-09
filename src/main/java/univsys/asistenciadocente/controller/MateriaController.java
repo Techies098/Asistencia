@@ -1,10 +1,10 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.MateriaEntity;
 import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.MateriaRepository;
@@ -32,4 +32,16 @@ public class MateriaController {
         response.put("data", materias);
         return ResponseEntity.ok(response);
     }
+    @Autowired
+    public MateriaController(MateriaRepository materiaRepository) {
+        this.materiaRepository = materiaRepository;
+    }
+
+    @Transactional
+    @PostMapping("/materia/store")
+    public ResponseEntity<?> store(@RequestBody MateriaEntity materia) {
+        materiaRepository.save(materia);
+        return ResponseEntity.status(HttpStatus.CREATED).body(materia);
+    }
+
 }

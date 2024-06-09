@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import univsys.asistenciadocente.models.CarreraEntity;
-import univsys.asistenciadocente.models.FacultadEntity;
 import univsys.asistenciadocente.models.ModuloEntity;
 import univsys.asistenciadocente.repositories.ModuloRepository;
 
@@ -33,9 +31,9 @@ public class ModuloController {
     }
     @Transactional
     @PostMapping("/store")
-    public ResponseEntity<ModuloEntity> crearModulo(@RequestBody ModuloEntity modulo) {
-        ModuloEntity nuevoModulo = moduloRepository.save(modulo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoModulo);
+    public ResponseEntity<ModuloEntity> store(@RequestBody ModuloEntity modulo) {
+        moduloRepository.save(modulo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modulo);
     }/*{
     "numero": 555
     }*/

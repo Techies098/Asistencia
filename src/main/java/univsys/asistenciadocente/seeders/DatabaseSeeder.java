@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import univsys.asistenciadocente.models.*;
@@ -29,7 +27,7 @@ public class DatabaseSeeder {
     @Autowired
     private ModuloRepository moduloRepository;
     @Autowired
-    private AulaRepositry aulaRepositry;
+    private AulaRepository aulaRepository;
 
     @EventListener
     @Transactional
@@ -58,7 +56,7 @@ public class DatabaseSeeder {
             AulaEntity aula = new AulaEntity();
             aula.setNumero(numero);
             aula.setModulo(modulo.get());
-            aulaRepositry.save(aula);
+            aulaRepository.save(aula);
         }
     }
     public void seedModulos() {
@@ -72,7 +70,6 @@ public class DatabaseSeeder {
         moduloSeed(226);
         moduloSeed(236);
         moduloSeed(237);
-
     }
 
     private void moduloSeed(int num) {
@@ -159,21 +156,13 @@ public class DatabaseSeeder {
     }
 
     private void seedRoleTable() {
-        if (roleRepository.findByName("ADMIN") == null) {
-            RoleEntity adminRole = new RoleEntity();
-            adminRole.setName("ADMIN");
-            roleRepository.save(adminRole);
-        }
-        if (roleRepository.findByName("USER") == null) {
-            RoleEntity userRole = new RoleEntity();
-            userRole.setName("USER");
-            roleRepository.save(userRole);
-        }
-        if (roleRepository.findByName("INVITED") == null) {
-            RoleEntity invRole = new RoleEntity();
-            invRole.setName("INVITED");
-            roleRepository.save(invRole);
-        }
+        rolSeed("USER");
+        rolSeed("ADMIN");
+    }
+    public void rolSeed (String nombre){
+        RoleEntity Rol = new RoleEntity();
+        Rol.setName(nombre);
+        roleRepository.save(Rol);
     }
 
     private void seedUsersTable() {

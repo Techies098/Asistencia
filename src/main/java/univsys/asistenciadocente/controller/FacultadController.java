@@ -36,9 +36,9 @@ public class FacultadController {
 
     @Transactional
     @PostMapping("/store")
-    public ResponseEntity<FacultadEntity> crearFacultad(@RequestBody FacultadEntity facultad) {
-        FacultadEntity nuevaFacultad = facultadRepository.save(facultad);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaFacultad);
+    public ResponseEntity<FacultadEntity> store(@RequestBody FacultadEntity facultad) {
+        facultadRepository.save(facultad);
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultad);
     }
     /* esperado :
     {

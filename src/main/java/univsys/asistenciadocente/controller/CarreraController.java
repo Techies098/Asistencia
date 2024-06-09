@@ -42,15 +42,9 @@ public class CarreraController {
 
     @Transactional
     @PostMapping("/store")
-    public ResponseEntity<?> crearCarrera(@RequestBody CarreraEntity carrera) {
-        Long facultadId = carrera.getFacultad().getId();
-        Optional<FacultadEntity> facultad = facultadRepository.findById(facultadId);
-        if (!facultad.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La facultad con ID " + facultadId + " no existe.");
-        }
-        carrera.setFacultad(facultad.get());
-        CarreraEntity nuevaCarrera = carreraRepository.save(carrera);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaCarrera);
+    public ResponseEntity<?> store(@RequestBody CarreraEntity carrera) {
+        carreraRepository.save(carrera);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carrera);
     }
     /*
         {

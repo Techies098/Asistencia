@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import univsys.asistenciadocente.models.AulaEntity;
 
 @Repository
-public interface AulaRepositry extends CrudRepository<AulaEntity,Long> {
+public interface AulaRepository extends CrudRepository<AulaEntity,Long> {
     AulaEntity findBynumero(int nro);
 }
