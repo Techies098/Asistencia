@@ -70,6 +70,7 @@ public class DatabaseSeeder {
         moduloSeed(226);
         moduloSeed(236);
         moduloSeed(237);
+        moduloSeed(666);
     }
 
     private void moduloSeed(int num) {
