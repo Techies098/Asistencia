@@ -1,7 +1,6 @@
 package univsys.asistenciadocente.controller;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -66,5 +65,4 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

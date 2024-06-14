@@ -201,30 +201,23 @@ public class DatabaseSeeder {
     }
 
     private void seedUsersTable() {
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        userSeed("Administrador General","admin","0000","ADMIN");
+        userSeed("Victor Ciprian Ortuño","Vicio","0000","ADMIN");
+        userSeed("Mario Rios Contreras","Mari","0000","ADMIN");
+        userSeed("Alejandro Salazar","docente","0000","USER");
+        userSeed("Manuel Pedraza","Mape","0000","USER");
+        userSeed("Michael Suarez","Michu","0000","USER");
+        userSeed("Angela Carrasco","Angy","0000","USER");
+        userSeed("Anita Mendoza","Amen","0000","USER");
+        userSeed("Olga Botegga","Obo","0000","USER");
+    }
+    private void userSeed (String name ,String nick, String password, String rol){
+        if (userRepository.findByUsername(name).isEmpty()) {
             UserEntity user = new UserEntity();
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("0000"));
-            user.setEmail("admin@gmail.com");
-            user.setRol("ADMIN");
-            user.setActive(true);
-            userRepository.save(user);
-        }
-        if (userRepository.findByUsername("docente").isEmpty()) {
-            UserEntity user = new UserEntity();
-            user.setUsername("docente");
-            user.setPassword(passwordEncoder.encode("0000"));
-            user.setEmail("docente@gmail.com");
-            user.setRol("USER");
-            user.setActive(true);
-            userRepository.save(user);
-        }
-        if (userRepository.findByUsername("Angy").isEmpty()) {
-            UserEntity user = new UserEntity();
-            user.setUsername("Angy");
-            user.setPassword(passwordEncoder.encode("0000"));
-            user.setEmail("Angy@gmail.com");
-            user.setRol("USER");
+            user.setUsername(name);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setEmail(nick+"@gmail.com");
+            user.setRol(rol);
             user.setActive(true);
             userRepository.save(user);
         }
