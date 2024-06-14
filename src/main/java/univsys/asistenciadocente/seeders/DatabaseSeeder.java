@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import univsys.asistenciadocente.models.*;
 import univsys.asistenciadocente.repositories.*;
 
+import java.time.LocalTime;
 import java.util.*;
 
 @Component
@@ -30,6 +31,8 @@ public class DatabaseSeeder {
     private AulaRepository aulaRepository;
     @Autowired
     private CarreraMateriaRepository carreraMateriaRepository;
+    @Autowired
+    private HorarioRepository horarioRepository;
 
     @EventListener
     @Transactional
@@ -42,17 +45,48 @@ public class DatabaseSeeder {
         seedModulos();
         seedAulas();
         CarreraMateriaSeeder();
+        seedHorarios();
 
 
     }
-    public void seedAulas() {
-        for (Long moduloId = 1L; moduloId <= 10L; moduloId++) {
-            for (int aulaNumero = 1; aulaNumero <= 24; aulaNumero++) {
-                aulaSeed(aulaNumero,moduloId);
-            }
+
+    public void seedHorarios() {
+        Iterable<AulaEntity> aulas = aulaRepository.findAll();
+        for (AulaEntity aula : aulas) {
+            Long aulaId = aula.getId();
+            horarioSeed(aulaId, "07:00", "07:45");
+            horarioSeed(aulaId, "07:45", "08:30");
+            horarioSeed(aulaId, "08:30", "09:15");
+            horarioSeed(aulaId, "09:15", "10:00");
+            horarioSeed(aulaId, "10:00", "10:45");
+            horarioSeed(aulaId, "10:45", "11:30");
+            horarioSeed(aulaId, "11:30", "12:15");
+            horarioSeed(aulaId, "12:15", "13:00");
+            horarioSeed(aulaId, "13:45", "14:30");
+            horarioSeed(aulaId, "14:30", "15:15");
+            horarioSeed(aulaId, "15:15", "16:00");
+        }
+    }
+    public void horarioSeed(Long aulaID, String Sinicio, String Sfin) {
+        Optional<AulaEntity> aula = aulaRepository.findById(aulaID);
+        if (aula.isPresent()) {
+            LocalTime fin= LocalTime.parse(Sfin);
+            LocalTime inicio = LocalTime.parse(Sinicio);
+            HorarioEntity horario = new HorarioEntity();
+            horario.setAula(aula.get());
+            horario.setInicio(inicio);
+            horario.setFin(fin);
+            horarioRepository.save(horario);
         }
     }
 
+    public void seedAulas() {
+        for (Long moduloId = 1L; moduloId <= 10L; moduloId++) {
+            for (int aulaNumero = 1; aulaNumero <= 24; aulaNumero++) {
+                aulaSeed(aulaNumero, moduloId);
+            }
+        }
+    }
 
     private void aulaSeed(int numero, Long idModulo) {
         Optional<ModuloEntity> modulo = moduloRepository.findById(idModulo);

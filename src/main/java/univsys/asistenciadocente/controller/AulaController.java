@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.AulaEntity;
+import univsys.asistenciadocente.models.HorarioEntity;
 import univsys.asistenciadocente.models.ModuloEntity;
 import univsys.asistenciadocente.repositories.AulaRepository;
+import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.ModuloRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +27,17 @@ public class AulaController {
     private ModuloRepository moduloRepository;
     @Autowired
     private AulaRepository aulaRepository;
+    @Autowired
+    private HorarioRepository horarioRepository;
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> list() {
-        List<AulaEntity> carreras = (List<AulaEntity>) aulaRepository.findAll();
+        List<AulaEntity> aulas = (List<AulaEntity>) aulaRepository.findAll();
         Map<String, Object> response = new HashMap<>();
         response.put("status code", "200");
         response.put("mensaje", "lista de aulas");
         response.put("fecha", LocalDate.now());
-        response.put("data", carreras);
+        response.put("data", aulas);
         return ResponseEntity.ok(response);
     }
     @Autowired
@@ -42,6 +48,7 @@ public class AulaController {
     @PostMapping("/store")
     public ResponseEntity<?> store(@RequestBody AulaEntity aula) {
         aulaRepository.save(aula);
+        creaHorarios(aula.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(aula);
     }/*
     {
@@ -51,4 +58,46 @@ public class AulaController {
                     }
     }
     */
+    @GetMapping("/{aulaId}")
+    public ResponseEntity<Map<String, Object>> show(@PathVariable Long aulaId) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<AulaEntity> aulas = aulaRepository.findById(aulaId);
+        if (aulas.isPresent()) {
+            AulaEntity aula = aulas.get();
+            List<HorarioEntity> Horarios = horarioRepository.findByAulaId(aula.getId());
+            response.put("status code", "200");
+            response.put("mensaje", "Detalles del aula");
+            response.put("fecha", LocalDate.now());
+            response.put("aula", aula);
+            response.put("Horarios", Horarios);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    public void creaHorarios(Long aulaId) {
+            horarioSeed(aulaId, "07:00", "07:45");
+            horarioSeed(aulaId, "07:45", "08:30");
+            horarioSeed(aulaId, "08:30", "09:15");
+            horarioSeed(aulaId, "09:15", "10:00");
+            horarioSeed(aulaId, "10:00", "10:45");
+            horarioSeed(aulaId, "10:45", "11:30");
+            horarioSeed(aulaId, "11:30", "12:15");
+            horarioSeed(aulaId, "12:15", "13:00");
+            horarioSeed(aulaId, "13:45", "14:30");
+            horarioSeed(aulaId, "14:30", "15:15");
+            horarioSeed(aulaId, "15:15", "16:00");
+    }
+    public void horarioSeed(Long aulaID, String Sinicio, String Sfin) {
+        Optional<AulaEntity> aula = aulaRepository.findById(aulaID);
+        if (aula.isPresent()) {
+            LocalTime fin= LocalTime.parse(Sfin);
+            LocalTime inicio = LocalTime.parse(Sinicio);
+            HorarioEntity horario = new HorarioEntity();
+            horario.setAula(aula.get());
+            horario.setInicio(inicio);
+            horario.setFin(fin);
+            horarioRepository.save(horario);
+        }
+    }
 }
