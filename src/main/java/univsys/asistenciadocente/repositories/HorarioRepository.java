@@ -1,7 +1,6 @@
 package univsys.asistenciadocente.repositories;
 
 import org.springframework.data.repository.CrudRepository;
-import univsys.asistenciadocente.models.AulaEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
 
 import java.util.List;
