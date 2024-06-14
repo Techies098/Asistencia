@@ -13,7 +13,7 @@ import univsys.asistenciadocente.repositories.UserRepository;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
+@CrossOrigin
 @RestController
 public class PrincipalController {
     @Autowired
