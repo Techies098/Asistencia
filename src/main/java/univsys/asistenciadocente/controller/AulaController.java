@@ -45,11 +45,10 @@ public class AulaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(aula);
     }/*
     {
-    "numero": 1,
-    "modulo": {
-        "id": 1
+        "numero": 1,
+        "modulo":   {
+                    "id": 1
+                    }
     }
-}
-*/
-
+    */
 }
