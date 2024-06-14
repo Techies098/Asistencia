@@ -6,24 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "horarios")
-public class HorarioEntity {
+@Table(name = "grupos")
+public class GrupoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalTime inicio;
-    private LocalTime fin;
+    private String nombre;
+    private String periodo;
     @ManyToOne
-    @JoinColumn(name = "aula_id")
-    private AulaEntity aula;
+    @JoinColumn(name = "materia_id")
+    private MateriaEntity materia;
     @ManyToOne
-    @JoinColumn(name = "grupo_id")
-    private GrupoEntity grupo;
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
