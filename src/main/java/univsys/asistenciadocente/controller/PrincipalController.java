@@ -6,13 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.CreateUserDTO;
-import univsys.asistenciadocente.models.RoleEntity;
 import univsys.asistenciadocente.models.UserEntity;
 import univsys.asistenciadocente.repositories.RoleRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 @CrossOrigin
 @RestController
 public class PrincipalController {
@@ -20,8 +17,6 @@ public class PrincipalController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
 
 
     @GetMapping("/hello")
@@ -36,22 +31,21 @@ public class PrincipalController {
     @PostMapping("/createUser")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
         //creamos el set donde van los roles
-        Set<RoleEntity> roles = createUserDTO.getRoles().stream()
-                .map(roleName -> {
-                    RoleEntity role = roleRepository.findByName(roleName);
-                    if (role == null) {
-                        throw new RuntimeException("El rol '" + roleName + "' no existe.");
-                    }
-                    return role;
-                })
-                .collect(Collectors.toSet());
-
+//        Set<RoleEntity> roles = createUserDTO.getRoles().stream()
+//                .map(roleName -> {
+//                    RoleEntity role = roleRepository.findByName(roleName);
+//                    if (role == null) {
+//                        throw new RuntimeException("El rol '" + roleName + "' no existe.");
+//                    }
+//                    return role;
+//                })
+//                .collect(Collectors.toSet());
         UserEntity userEntity = UserEntity.builder()
                 .username(createUserDTO.getUsername())
                 .password(passwordEncoder.encode(createUserDTO.getPassword()))
                 .email(createUserDTO.getEmail())
                 .active(true)
-                .roles(roles)
+                .rol(createUserDTO.getRol())
                 .build();
 
         userRepository.save(userEntity);

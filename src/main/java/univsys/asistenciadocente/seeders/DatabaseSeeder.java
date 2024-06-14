@@ -206,10 +206,7 @@ public class DatabaseSeeder {
             user.setUsername("admin");
             user.setPassword(passwordEncoder.encode("0000"));
             user.setEmail("admin@gmail.com");
-            RoleEntity role = roleRepository.findByName("ADMIN");
-            Set<RoleEntity> roles = new HashSet<>();
-            roles.add(role);
-            user.setRoles(roles);
+            user.setRol("ADMIN");
             user.setActive(true);
             userRepository.save(user);
         }
@@ -218,10 +215,7 @@ public class DatabaseSeeder {
             user.setUsername("docente");
             user.setPassword(passwordEncoder.encode("0000"));
             user.setEmail("docente@gmail.com");
-            RoleEntity role = roleRepository.findByName("USER");
-            Set<RoleEntity> roles = new HashSet<>();
-            roles.add(role);
-            user.setRoles(roles);
+            user.setRol("USER");
             user.setActive(true);
             userRepository.save(user);
         }
@@ -230,10 +224,7 @@ public class DatabaseSeeder {
             user.setUsername("Angy");
             user.setPassword(passwordEncoder.encode("0000"));
             user.setEmail("Angy@gmail.com");
-            RoleEntity role = roleRepository.findByName("USER");
-            Set<RoleEntity> roles = new HashSet<>();
-            roles.add(role);
-            user.setRoles(roles);
+            user.setRol("USER");
             user.setActive(true);
             userRepository.save(user);
         }

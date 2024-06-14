@@ -29,25 +29,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 ,authorities);
     }
 }*/
-@Service
-public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+//@Service
+//public class UserDetailsServiceImpl implements UserDetailsService {
+//    private final UserRepository userRepository;
+//
+//    @Autowired
+//    public UserDetailsServiceImpl(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    }
 
-    @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe"));
-        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
-                .collect(Collectors.toSet());
-        return new User(userEntity.getUsername(), userEntity.getPassword(),
-                userEntity.isActive(), true, true, true, authorities);
-    }
-}
-
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        UserEntity userEntity = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe"));
+//        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles().stream()
+//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+//                .collect(Collectors.toSet());
+//        return new User(userEntity.getUsername(), userEntity.getPassword(),
+//                userEntity.isActive(), true, true, true, authorities);
+ //   }
+//}
+//
 
