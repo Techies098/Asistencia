@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.CarreraEntity;
 import univsys.asistenciadocente.models.CarreraMateriaEntity;
-import univsys.asistenciadocente.models.FacultadEntity;
-import univsys.asistenciadocente.models.MateriaEntity;
 import univsys.asistenciadocente.repositories.CarreraMateriaRepository;
 import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.FacultadRepository;

@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.CreateUserDTO;
 import univsys.asistenciadocente.models.UserEntity;
-import univsys.asistenciadocente.repositories.RoleRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
 @CrossOrigin

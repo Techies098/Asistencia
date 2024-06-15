@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.AulaEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
-import univsys.asistenciadocente.models.ModuloEntity;
 import univsys.asistenciadocente.repositories.AulaRepository;
 import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.ModuloRepository;
@@ -40,10 +39,12 @@ public class AulaController {
         response.put("data", aulas);
         return ResponseEntity.ok(response);
     }
+
     @Autowired
     public AulaController(AulaRepository aulaRepository) {
         this.aulaRepository = aulaRepository;
     }
+
     @Transactional
     @PostMapping("/store")
     public ResponseEntity<?> store(@RequestBody AulaEntity aula) {
@@ -58,6 +59,7 @@ public class AulaController {
                     }
     }
     */
+
     @GetMapping("/{aulaId}")
     public ResponseEntity<Map<String, Object>> show(@PathVariable Long aulaId) {
         Map<String, Object> response = new HashMap<>();
@@ -75,23 +77,25 @@ public class AulaController {
             return ResponseEntity.notFound().build();
         }
     }
+
     public void creaHorarios(Long aulaId) {
-            horarioSeed(aulaId, "07:00", "07:45");
-            horarioSeed(aulaId, "07:45", "08:30");
-            horarioSeed(aulaId, "08:30", "09:15");
-            horarioSeed(aulaId, "09:15", "10:00");
-            horarioSeed(aulaId, "10:00", "10:45");
-            horarioSeed(aulaId, "10:45", "11:30");
-            horarioSeed(aulaId, "11:30", "12:15");
-            horarioSeed(aulaId, "12:15", "13:00");
-            horarioSeed(aulaId, "13:45", "14:30");
-            horarioSeed(aulaId, "14:30", "15:15");
-            horarioSeed(aulaId, "15:15", "16:00");
+        horarioSeed(aulaId, "07:00", "07:45");
+        horarioSeed(aulaId, "07:45", "08:30");
+        horarioSeed(aulaId, "08:30", "09:15");
+        horarioSeed(aulaId, "09:15", "10:00");
+        horarioSeed(aulaId, "10:00", "10:45");
+        horarioSeed(aulaId, "10:45", "11:30");
+        horarioSeed(aulaId, "11:30", "12:15");
+        horarioSeed(aulaId, "12:15", "13:00");
+        horarioSeed(aulaId, "13:45", "14:30");
+        horarioSeed(aulaId, "14:30", "15:15");
+        horarioSeed(aulaId, "15:15", "16:00");
     }
+
     public void horarioSeed(Long aulaID, String Sinicio, String Sfin) {
         Optional<AulaEntity> aula = aulaRepository.findById(aulaID);
         if (aula.isPresent()) {
-            LocalTime fin= LocalTime.parse(Sfin);
+            LocalTime fin = LocalTime.parse(Sfin);
             LocalTime inicio = LocalTime.parse(Sinicio);
             HorarioEntity horario = new HorarioEntity();
             horario.setAula(aula.get());

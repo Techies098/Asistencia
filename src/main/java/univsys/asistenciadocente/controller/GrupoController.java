@@ -1,10 +1,9 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.GrupoEntity;
 import univsys.asistenciadocente.repositories.GrupoRepository;
 
@@ -32,5 +31,13 @@ public class GrupoController {
         response.put("fecha", LocalDate.now());
         response.put("data", grupos);
         return ResponseEntity.ok(response);
+    }
+
+
+    @Transactional
+    @PostMapping("/store")
+    public ResponseEntity<?> store(@RequestBody GrupoEntity grup) {
+        grupoRepository.save(grup);
+        return ResponseEntity.status(HttpStatus.CREATED).body(grup);
     }
 }

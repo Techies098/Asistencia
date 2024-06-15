@@ -57,7 +57,7 @@ public class UserController {
         Optional<UserEntity> user = userRepository.findById(userId);
         if (user.isPresent()) {
             response.put("status code", "200");
-            response.put("mensaje", "Detalles del modulo y sus aulas");
+            response.put("mensaje", "Detalles del usuario");
             response.put("fecha", LocalDate.now());
             response.put("data", user);
             return ResponseEntity.ok(response);
