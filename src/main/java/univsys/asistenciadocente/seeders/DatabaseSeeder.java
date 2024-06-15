@@ -112,6 +112,7 @@ public class DatabaseSeeder {
             AulaEntity aula = new AulaEntity();
             aula.setNumero(numero);
             aula.setModulo(modulo.get());
+            aula.setCapacidad(40);
             aulaRepository.save(aula);
         }
     }

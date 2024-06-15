@@ -57,6 +57,7 @@ public class AulaController {
                 .orElseThrow(() -> new EntityNotFoundException("modulo not found"));
         aula.setNumero(req.getNumero());
         aula.setModulo(modulo);
+        aula.setCapacidad(req.getCapacidad());
         aulaRepository.save(aula);
         creaHorarios(aula.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(aula);

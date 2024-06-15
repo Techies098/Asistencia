@@ -9,4 +9,5 @@ import lombok.Setter;
 public class AulaRequest {
     private int numero;
     private Long modulo;
+    private int capacidad;
 }

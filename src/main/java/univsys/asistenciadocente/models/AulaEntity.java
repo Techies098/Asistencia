@@ -19,6 +19,7 @@ public class AulaEntity {
     private Long id;
     @NotNull
     private int numero;
+    private int capacidad;
     @ManyToOne
     @JoinColumn(name = "modulo_id")
     private ModuloEntity modulo;
