@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import univsys.asistenciadocente.models.GrupoEntity;
-import univsys.asistenciadocente.models.HorarioEntity;
 import univsys.asistenciadocente.repositories.GrupoRepository;
 
 import java.time.LocalDate;
