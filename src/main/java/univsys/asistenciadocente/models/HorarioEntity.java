@@ -20,6 +20,7 @@ public class HorarioEntity {
     private Long id;
     private LocalTime inicio;
     private LocalTime fin;
+    private String dia;
     @ManyToOne
     @JoinColumn(name = "aula_id")
     private AulaEntity aula;

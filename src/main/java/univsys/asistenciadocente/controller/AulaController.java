@@ -59,7 +59,7 @@ public class AulaController {
         aula.setModulo(modulo);
         aula.setCapacidad(req.getCapacidad());
         aulaRepository.save(aula);
-        creaHorarios(aula.getId());
+        semana(aula.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(aula);
     }/*
     {
@@ -85,28 +85,37 @@ public class AulaController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    public void creaHorarios(Long aulaId) {
-        horarioSeed(aulaId, "07:00", "07:45");
-        horarioSeed(aulaId, "07:45", "08:30");
-        horarioSeed(aulaId, "08:30", "09:15");
-        horarioSeed(aulaId, "09:15", "10:00");
-        horarioSeed(aulaId, "10:00", "10:45");
-        horarioSeed(aulaId, "10:45", "11:30");
-        horarioSeed(aulaId, "11:30", "12:15");
-        horarioSeed(aulaId, "12:15", "13:00");
-        horarioSeed(aulaId, "13:45", "14:30");
-        horarioSeed(aulaId, "14:30", "15:15");
-        horarioSeed(aulaId, "15:15", "16:00");
+    public void semana (Long aulaId) {
+        creaHorarios(aulaId,"Lunes");
+        creaHorarios(aulaId,"Martes");
+        creaHorarios(aulaId,"Miercoles");
+        creaHorarios(aulaId,"Jueves");
+        creaHorarios(aulaId,"Viernes");
+        creaHorarios(aulaId,"Sabado");
     }
 
-    public void horarioSeed(Long aulaID, String Sinicio, String Sfin) {
+    public void creaHorarios(Long aulaId, String dia) {
+        horarioSeed(aulaId, "07:00", "07:45",dia);
+        horarioSeed(aulaId, "07:45", "08:30",dia);
+        horarioSeed(aulaId, "08:30", "09:15",dia);
+        horarioSeed(aulaId, "09:15", "10:00",dia);
+        horarioSeed(aulaId, "10:00", "10:45",dia);
+        horarioSeed(aulaId, "10:45", "11:30",dia);
+        horarioSeed(aulaId, "11:30", "12:15",dia);
+        horarioSeed(aulaId, "12:15", "13:00",dia);
+        horarioSeed(aulaId, "13:45", "14:30",dia);
+        horarioSeed(aulaId, "14:30", "15:15",dia);
+        horarioSeed(aulaId, "15:15", "16:00",dia);
+    }
+
+    public void horarioSeed(Long aulaID, String Sinicio, String Sfin, String dia) {
         Optional<AulaEntity> aula = aulaRepository.findById(aulaID);
         if (aula.isPresent()) {
             LocalTime fin = LocalTime.parse(Sfin);
             LocalTime inicio = LocalTime.parse(Sinicio);
             HorarioEntity horario = new HorarioEntity();
             horario.setAula(aula.get());
+            horario.setDia(dia);
             horario.setInicio(inicio);
             horario.setFin(fin);
             horarioRepository.save(horario);

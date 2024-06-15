@@ -8,15 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.AsistenciaRequest;
 import univsys.asistenciadocente.models.AsistenciaEntity;
 import univsys.asistenciadocente.models.AulaEntity;
+import univsys.asistenciadocente.models.GrupoEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
 import univsys.asistenciadocente.repositories.AsistenciaRepository;
+import univsys.asistenciadocente.repositories.GrupoRepository;
 import univsys.asistenciadocente.repositories.HorarioRepository;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -25,10 +24,12 @@ public class AsistenciaController {
 
     private final AsistenciaRepository asistenciaRepository;
     private final HorarioRepository horarioRepository;
+    private final GrupoRepository grupoRepository;
 
-    public AsistenciaController(AsistenciaRepository asistenciaRepository, HorarioRepository horarioRepository) {
+    public AsistenciaController(AsistenciaRepository asistenciaRepository, HorarioRepository horarioRepository, GrupoRepository grupoRepository) {
         this.asistenciaRepository = asistenciaRepository;
         this.horarioRepository = horarioRepository;
+        this.grupoRepository = grupoRepository;
     }
 
     @GetMapping
@@ -53,7 +54,20 @@ public class AsistenciaController {
         asistencia.setFecha(new Date());
         asistenciaRepository.save(asistencia);
         return ResponseEntity.status(HttpStatus.CREATED).body(asistencia);
-    }/*{
+    }/*
+    {
+    "estado": "Presente",
+    "horario": 1
     }
     */
+    @GetMapping("/grupo/{grupoId}")
+    public ResponseEntity<Map<String, Object>> show(@PathVariable Long grupoId) {
+        Map<String, Object> response = new HashMap<>();
+        List<AsistenciaEntity> asist = (List<AsistenciaEntity>) asistenciaRepository.findByHorarioGrupoId(grupoId);
+        response.put("status code", "200");
+        response.put("mensaje", "lista de asistencias del grupo"+grupoId);
+        response.put("fecha", LocalDate.now());
+        response.put("data", asist);
+        return ResponseEntity.ok(response);
+    }
 }

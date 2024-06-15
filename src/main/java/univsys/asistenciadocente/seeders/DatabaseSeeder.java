@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import univsys.asistenciadocente.models.*;
 import univsys.asistenciadocente.repositories.*;
 
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
 
 @Component
@@ -35,6 +35,8 @@ public class DatabaseSeeder {
     private HorarioRepository horarioRepository;
     @Autowired
     private GrupoRepository grupoRepository;
+    @Autowired
+    private AsistenciaRepository asistenciaRepository;
 
     @EventListener
     @Transactional
@@ -47,19 +49,83 @@ public class DatabaseSeeder {
         seedModulos();
         seedAulas();
         CarreraMateriaSeeder();
-        seedHorarios();
+        semana();
         GrupoSeeder();
+        asistenciaSeed();
+        horariogrupos();
 
 
     }
-    public void GrupoSeeder () {
-        seedGrupo("NW","1-2020",1L,4L);
-        seedGrupo("NW","2-2020",1L,4L);
-        seedGrupo("NW","3-2020",1L,5L);
-        seedGrupo("NW","1-2021",1L,5L);
+
+    public void asistenciaSeed() {
+        seedAsist("Presente", 1L, 3);
+        seedAsist("Presente", 1L, 2);
+        seedAsist("Presente", 1L, 1);
+    }
+
+    public void seedAsist(String estado, Long horarioId, int dias) {
+        AsistenciaEntity asistencia = new AsistenciaEntity();
+        asistencia.setEstado(estado);
+        HorarioEntity horario = horarioRepository.findById(horarioId)
+                .orElseThrow(() -> new RuntimeException("Horario not found"));
+        asistencia.setHorario(horario);
+        LocalDate localDate = LocalDate.now().minusDays(dias);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, horario.getInicio());
+        Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+        Date date = Date.from(instant);
+        asistencia.setFecha(date);
+        asistenciaRepository.save(asistencia);
+    }
+    public void horariogrupos (){
+        asignargrupo(1L,1L);
+        asignargrupo(1L,2L);
+        asignargrupo(1L,5281L);
+        asignargrupo(1L,5282L);
+        asignargrupo(1L,10561L);
+        asignargrupo(1L,10562L);
+        asignargrupo(2L,3L);
+        asignargrupo(2L,4L);
+        asignargrupo(2L,5283L);
+        asignargrupo(2L,5284L);
+        asignargrupo(2L,10563L);
+        asignargrupo(2L,10564L);
+        asignargrupo(3L,5L);
+        asignargrupo(3L,6L);
+        asignargrupo(3L,5285L);
+        asignargrupo(3L,5286L);
+        asignargrupo(3L,10565L);
+        asignargrupo(3L,10566L);
 
     }
-    public void seedGrupo(String nombre, String periodo, Long materiaId, Long userId){
+@Transactional
+    public void asignargrupo(Long idgrupo, Long idhorario) {
+        HorarioEntity horario = horarioRepository.findById(idhorario).orElseThrow(() -> new RuntimeException("Horario not found"));
+        GrupoEntity grupo = grupoRepository.findById(idgrupo).orElseThrow(() -> new RuntimeException("Grupo not found"));
+        horario.setGrupo(grupo);
+        horarioRepository.save(horario);
+    }
+
+    public void GrupoSeeder() {
+        seedGrupo("NW", "1-2024", 1L, 4L);
+        seedGrupo("SC", "1-2024", 1L, 4L);
+        seedGrupo("SA", "1-2024", 1L, 5L);
+        seedGrupo("SB", "1-2024", 1L, 5L);
+        seedGrupo("NW", "1-2024", 2L, 6L);
+        seedGrupo("SC", "1-2024", 2L, 6L);
+        seedGrupo("SA", "1-2024", 2L, 7L);
+        seedGrupo("SB", "1-2024", 2L, 7L);
+        seedGrupo("NW", "2-2023", 1L, 4L);
+        seedGrupo("SC", "2-2023", 1L, 4L);
+        seedGrupo("SA", "2-2023", 1L, 5L);
+        seedGrupo("SB", "2-2023", 1L, 5L);
+        seedGrupo("NW", "2-2023", 2L, 6L);
+        seedGrupo("SC", "2-2023", 2L, 6L);
+        seedGrupo("SA", "2-2023", 2L, 7L);
+        seedGrupo("SB", "3-2023", 2L, 7L);
+
+    }
+
+    public void seedGrupo(String nombre, String periodo, Long materiaId, Long userId) {
         GrupoEntity grup = new GrupoEntity();
         grup.setNombre(nombre);
         grup.setPeriodo(periodo);
@@ -67,33 +133,43 @@ public class DatabaseSeeder {
         grup.setUser(userRepository.findById(userId).get());
         grupoRepository.save(grup);
     }
+    public void semana () {
+        seedHorarios("Lunes");
+        seedHorarios("Martes");
+        seedHorarios("Miercoles");
+        seedHorarios("Jueves");
+        seedHorarios("Viernes");
+        seedHorarios("Sabado");
+    }
 
-    public void seedHorarios() {
+    public void seedHorarios(String dia) {
         Iterable<AulaEntity> aulas = aulaRepository.findAll();
         for (AulaEntity aula : aulas) {
             Long aulaId = aula.getId();
-            horarioSeed(aulaId, "07:00", "07:45");
-            horarioSeed(aulaId, "07:45", "08:30");
-            horarioSeed(aulaId, "08:30", "09:15");
-            horarioSeed(aulaId, "09:15", "10:00");
-            horarioSeed(aulaId, "10:00", "10:45");
-            horarioSeed(aulaId, "10:45", "11:30");
-            horarioSeed(aulaId, "11:30", "12:15");
-            horarioSeed(aulaId, "12:15", "13:00");
-            horarioSeed(aulaId, "13:45", "14:30");
-            horarioSeed(aulaId, "14:30", "15:15");
-            horarioSeed(aulaId, "15:15", "16:00");
+            horarioSeed(aulaId, "07:00", "07:45",dia);
+            horarioSeed(aulaId, "07:45", "08:30",dia);
+            horarioSeed(aulaId, "08:30", "09:15",dia);
+            horarioSeed(aulaId, "09:15", "10:00",dia);
+            horarioSeed(aulaId, "10:00", "10:45",dia);
+            horarioSeed(aulaId, "10:45", "11:30",dia);
+            horarioSeed(aulaId, "11:30", "12:15",dia);
+            horarioSeed(aulaId, "12:15", "13:00",dia);
+            horarioSeed(aulaId, "13:45", "14:30",dia);
+            horarioSeed(aulaId, "14:30", "15:15",dia);
+            horarioSeed(aulaId, "15:15", "16:00",dia);
         }
     }
-    public void horarioSeed(Long aulaID, String Sinicio, String Sfin) {
+
+    public void horarioSeed(Long aulaID, String Sinicio, String Sfin,String dia) {
         Optional<AulaEntity> aula = aulaRepository.findById(aulaID);
         if (aula.isPresent()) {
-            LocalTime fin= LocalTime.parse(Sfin);
+            LocalTime fin = LocalTime.parse(Sfin);
             LocalTime inicio = LocalTime.parse(Sinicio);
             HorarioEntity horario = new HorarioEntity();
             horario.setAula(aula.get());
             horario.setInicio(inicio);
             horario.setFin(fin);
+            horario.setDia(dia);
             horarioRepository.save(horario);
         }
     }
@@ -116,6 +192,7 @@ public class DatabaseSeeder {
             aulaRepository.save(aula);
         }
     }
+
     public void seedModulos() {
         moduloSeed(220);
         moduloSeed(221);
@@ -129,20 +206,22 @@ public class DatabaseSeeder {
         moduloSeed(237);
         moduloSeed(666);
     }
+
     public void CarreraMateriaSeeder() {
         for (int i = 1; i < 17; i++) {
-            Long materia = (long ) i;
-            carreraMateriaSeed(1+i/5,1L,materia);
-            carreraMateriaSeed(1+i/5,2L,materia);
-            carreraMateriaSeed(1+i/5,3L,materia);
+            Long materia = (long) i;
+            carreraMateriaSeed(1 + i / 5, 1L, materia);
+            carreraMateriaSeed(1 + i / 5, 2L, materia);
+            carreraMateriaSeed(1 + i / 5, 3L, materia);
         }
         for (int i = 1; i < 11; i++) {
-            Long materia = (long ) i +16;
-            carreraMateriaSeed(1+i/5,4L,materia);
-            carreraMateriaSeed(1+i/5,5L,materia);
-            carreraMateriaSeed(1+i/5,6L,materia);
+            Long materia = (long) i + 16;
+            carreraMateriaSeed(1 + i / 5, 4L, materia);
+            carreraMateriaSeed(1 + i / 5, 5L, materia);
+            carreraMateriaSeed(1 + i / 5, 6L, materia);
         }
     }
+
     private void carreraMateriaSeed(int nivel, Long carreraId, Long materiaId) {
         CarreraMateriaEntity carreraMateria = new CarreraMateriaEntity();
         // Obtener las entidades de carrera y materia por sus IDs (usando tus repositorios)
@@ -159,41 +238,41 @@ public class DatabaseSeeder {
     }
 
 
-
     private void moduloSeed(int num) {
         ModuloEntity mod = new ModuloEntity();
         mod.setNumero(num);
         moduloRepository.save(mod);
     }
-    public void SeedMaterias () {
+
+    public void SeedMaterias() {
         //Sistemas
-        materiaseed("Calculo I","MAT-101");
-        materiaseed("Calculo II","MAT-102");
-        materiaseed("Ecuaciones Dif.","MAT-207");
-        materiaseed("Introduccion a la informatica","INF-110");
-        materiaseed("Fisica I","FIS-100");
-        materiaseed("Fisica II","FIS-102");
-        materiaseed("Fisica III","FIS-300");
-        materiaseed("Ingles I","LIN-100");
-        materiaseed("Ingles II","LIN-101");
-        materiaseed("Administracion","ADM-100");
-        materiaseed("Arq. de Computadoras","INF-211");
-        materiaseed("Programacion II","INF-210");
-        materiaseed("Programacion I","INF-120");
-        materiaseed("Programacion Ensamblador","INF-333");
-        materiaseed("Estructuras de Datos I","INF-220");
-        materiaseed("Estructuras de Datos II","INF-310");
-    //industrial
-        materiaseed("Algebra I","MAT-100");
-        materiaseed("Dibujo Tecnico I","MEC-101");
-        materiaseed("Dibujo Tecnico II","MEC-103");
-        materiaseed("Quimica General","QMC-100");
-        materiaseed("Quimica Organica I","QMC-200");
-        materiaseed("Fisico-Quimica I","QMC-206");
-        materiaseed("Probabilidad y Estadistica","IND-110");
-        materiaseed("Informatica I","INF-243");
-        materiaseed("teoria de Circuitos I","ELT-211");
-        materiaseed("teoria de Circuitos II","ELT-311");
+        materiaseed("Calculo I", "MAT-101");
+        materiaseed("Calculo II", "MAT-102");
+        materiaseed("Ecuaciones Dif.", "MAT-207");
+        materiaseed("Introduccion a la informatica", "INF-110");
+        materiaseed("Fisica I", "FIS-100");
+        materiaseed("Fisica II", "FIS-102");
+        materiaseed("Fisica III", "FIS-300");
+        materiaseed("Ingles I", "LIN-100");
+        materiaseed("Ingles II", "LIN-101");
+        materiaseed("Administracion", "ADM-100");
+        materiaseed("Arq. de Computadoras", "INF-211");
+        materiaseed("Programacion II", "INF-210");
+        materiaseed("Programacion I", "INF-120");
+        materiaseed("Programacion Ensamblador", "INF-333");
+        materiaseed("Estructuras de Datos I", "INF-220");
+        materiaseed("Estructuras de Datos II", "INF-310");
+        //industrial
+        materiaseed("Algebra I", "MAT-100");
+        materiaseed("Dibujo Tecnico I", "MEC-101");
+        materiaseed("Dibujo Tecnico II", "MEC-103");
+        materiaseed("Quimica General", "QMC-100");
+        materiaseed("Quimica Organica I", "QMC-200");
+        materiaseed("Fisico-Quimica I", "QMC-206");
+        materiaseed("Probabilidad y Estadistica", "IND-110");
+        materiaseed("Informatica I", "INF-243");
+        materiaseed("teoria de Circuitos I", "ELT-211");
+        materiaseed("teoria de Circuitos II", "ELT-311");
     }
 
     private void materiaseed(String nombreMateria, String siglaMateria) {
@@ -227,6 +306,7 @@ public class DatabaseSeeder {
             carreraRepository.save(carre);
         }
     }
+
     public void seedFacultades() {
         List<String> nombresFacultades = new ArrayList<>();
         nombresFacultades.add("Contaduria");
@@ -247,29 +327,31 @@ public class DatabaseSeeder {
         rolSeed("USER");
         rolSeed("ADMIN");
     }
-    public void rolSeed (String nombre){
+
+    public void rolSeed(String nombre) {
         RoleEntity Rol = new RoleEntity();
         Rol.setName(nombre);
         roleRepository.save(Rol);
     }
 
     private void seedUsersTable() {
-        userSeed("Administrador General","admin","0000","ADMIN");
-        userSeed("Victor Ciprian Ortuño","Vicio","0000","ADMIN");
-        userSeed("Mario Rios Contreras","Mari","0000","ADMIN");
-        userSeed("Alejandro Salazar","docente","0000","USER");
-        userSeed("Manuel Pedraza","Mape","0000","USER");
-        userSeed("Michael Suarez","Michu","0000","USER");
-        userSeed("Angela Carrasco","Angy","0000","USER");
-        userSeed("Anita Mendoza","Amen","0000","USER");
-        userSeed("Olga Botegga","Obo","0000","USER");
+        userSeed("Administrador General", "admin", "0000", "ADMIN");
+        userSeed("Victor Ciprian Ortuño", "Vicio", "0000", "ADMIN");
+        userSeed("Mario Rios Contreras", "Mari", "0000", "ADMIN");
+        userSeed("Alejandro Salazar", "docente", "0000", "USER");
+        userSeed("Manuel Pedraza", "Mape", "0000", "USER");
+        userSeed("Michael Suarez", "Michu", "0000", "USER");
+        userSeed("Angela Carrasco", "Angy", "0000", "USER");
+        userSeed("Anita Mendoza", "Amen", "0000", "USER");
+        userSeed("Olga Botegga", "Obo", "0000", "USER");
     }
-    private void userSeed (String name ,String nick, String password, String rol){
+
+    private void userSeed(String name, String nick, String password, String rol) {
         if (userRepository.findByUsername(name).isEmpty()) {
             UserEntity user = new UserEntity();
             user.setUsername(name);
             user.setPassword(passwordEncoder.encode(password));
-            user.setEmail(nick+"@gmail.com");
+            user.setEmail(nick + "@gmail.com");
             user.setRol(rol);
             user.setActive(true);
             userRepository.save(user);

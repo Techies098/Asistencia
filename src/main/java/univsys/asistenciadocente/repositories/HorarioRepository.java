@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface HorarioRepository extends CrudRepository<HorarioEntity,Long> {
     List<HorarioEntity> findByAulaId(Long aulaId);
+    List<HorarioEntity> findByGrupoId(Long grupoId);
 }

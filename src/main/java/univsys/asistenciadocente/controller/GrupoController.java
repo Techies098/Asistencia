@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.GrupoRequest;
 import univsys.asistenciadocente.models.GrupoEntity;
+import univsys.asistenciadocente.models.HorarioEntity;
 import univsys.asistenciadocente.models.MateriaEntity;
 import univsys.asistenciadocente.models.UserEntity;
 import univsys.asistenciadocente.repositories.GrupoRepository;
+import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.MateriaRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
@@ -25,11 +27,13 @@ public class GrupoController {
     private final GrupoRepository grupoRepository;
     private final MateriaRepository materiaRepository;
     private final UserRepository userRepository;
+    private final HorarioRepository horarioRepository;
 
-    public GrupoController(GrupoRepository grupoRepository, MateriaRepository materiaRepository, UserRepository userRepository) {
+    public GrupoController(GrupoRepository grupoRepository, MateriaRepository materiaRepository, UserRepository userRepository, HorarioRepository horarioRepository) {
         this.grupoRepository = grupoRepository;
         this.materiaRepository = materiaRepository;
         this.userRepository = userRepository;
+        this.horarioRepository = horarioRepository;
     }
 
     @GetMapping
@@ -58,6 +62,13 @@ public class GrupoController {
         grup.setUser(user);
         grupoRepository.save(grup);
         return ResponseEntity.status(HttpStatus.CREATED).body(grup);
+    }
+
+    public void asignargrupo(Long idgrupo, Long idhorario) {
+        HorarioEntity horario = horarioRepository.findById(idhorario).orElseThrow(() -> new RuntimeException("Horario not found"));
+        GrupoEntity grupo = grupoRepository.findById(idgrupo).orElseThrow(() -> new RuntimeException("Grupo not found"));
+        horario.setGrupo(grupo);
+        horarioRepository.save(horario);
     }
 
 }
