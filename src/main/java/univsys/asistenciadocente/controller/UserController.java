@@ -1,10 +1,12 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import univsys.asistenciadocente.controller.Request.LoginRequest;
 import univsys.asistenciadocente.models.UserEntity;
 import univsys.asistenciadocente.repositories.UserRepository;
 
@@ -63,6 +65,17 @@ public class UserController {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        UserEntity user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            return ResponseEntity.ok().body(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
     }
 }

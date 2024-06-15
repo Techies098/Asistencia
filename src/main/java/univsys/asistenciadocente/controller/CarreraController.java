@@ -58,6 +58,10 @@ public class CarreraController {
                 "id": 1
                 }
         }
+        {
+            "name": "Ingeniería en Sistemas",
+            "facultad": 1
+        }
     */
     @GetMapping("/{sigla}")
     public ResponseEntity<Map<String, Object>> show(@PathVariable String sigla) {
