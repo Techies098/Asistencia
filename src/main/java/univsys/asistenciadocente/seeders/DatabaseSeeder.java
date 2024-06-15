@@ -33,6 +33,8 @@ public class DatabaseSeeder {
     private CarreraMateriaRepository carreraMateriaRepository;
     @Autowired
     private HorarioRepository horarioRepository;
+    @Autowired
+    private GrupoRepository grupoRepository;
 
     @EventListener
     @Transactional
@@ -46,8 +48,24 @@ public class DatabaseSeeder {
         seedAulas();
         CarreraMateriaSeeder();
         seedHorarios();
+        GrupoSeeder();
 
 
+    }
+    public void GrupoSeeder () {
+        seedGrupo("NW","1-2020",1L,4L);
+        seedGrupo("NW","2-2020",1L,4L);
+        seedGrupo("NW","3-2020",1L,5L);
+        seedGrupo("NW","1-2021",1L,5L);
+
+    }
+    public void seedGrupo(String nombre, String periodo, Long materiaId, Long userId){
+        GrupoEntity grup = new GrupoEntity();
+        grup.setNombre(nombre);
+        grup.setPeriodo(periodo);
+        grup.setMateria(materiaRepository.findById(materiaId).get());
+        grup.setUser(userRepository.findById(userId).get());
+        grupoRepository.save(grup);
     }
 
     public void seedHorarios() {
