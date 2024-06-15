@@ -1,12 +1,15 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import univsys.asistenciadocente.controller.Request.CarreraRequest;
 import univsys.asistenciadocente.models.CarreraEntity;
 import univsys.asistenciadocente.models.CarreraMateriaEntity;
+import univsys.asistenciadocente.models.FacultadEntity;
 import univsys.asistenciadocente.repositories.CarreraMateriaRepository;
 import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.FacultadRepository;
@@ -47,20 +50,25 @@ public class CarreraController {
 
     @Transactional
     @PostMapping("/store")
-    public ResponseEntity<?> store(@RequestBody CarreraEntity carrera) {
-        carreraRepository.save(carrera);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carrera);
+    public ResponseEntity<?> store(@RequestBody CarreraRequest req) {
+        if (carreraRepository.findBySigla(req.getSigla()) != null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Sigla already exists");
+        }else {
+            FacultadEntity facu = facultadRepository.findById(req.getFacultad())
+                    .orElseThrow(() -> new EntityNotFoundException("facultad not found"));
+            CarreraEntity carrera = new CarreraEntity();
+            carrera.setFacultad(facu);
+            carrera.setName(req.getName());
+            carrera.setSigla(req.getSigla());
+            carreraRepository.save(carrera);
+            return ResponseEntity.status(HttpStatus.CREATED).body(carrera);
+        }
     }
     /*
         {
-            "name": "Ingeniería en Sistemas",
-            "facultad": {
-                "id": 1
-                }
-        }
-        {
-            "name": "Ingeniería en Sistemas",
-            "facultad": 1
+            "name": "Ingeniería en software",
+            "sigla": "INF-666",
+            "facultad": 5
         }
     */
     @GetMapping("/{sigla}")
@@ -88,6 +96,5 @@ public class CarreraController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
 

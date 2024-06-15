@@ -1,12 +1,16 @@
 package univsys.asistenciadocente.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import univsys.asistenciadocente.controller.Request.AulaRequest;
 import univsys.asistenciadocente.models.AulaEntity;
+import univsys.asistenciadocente.models.FacultadEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
+import univsys.asistenciadocente.models.ModuloEntity;
 import univsys.asistenciadocente.repositories.AulaRepository;
 import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.ModuloRepository;
@@ -47,16 +51,19 @@ public class AulaController {
 
     @Transactional
     @PostMapping("/store")
-    public ResponseEntity<?> store(@RequestBody AulaEntity aula) {
+    public ResponseEntity<?> store(@RequestBody AulaRequest req) {
+        AulaEntity aula = new AulaEntity();
+        ModuloEntity modulo = moduloRepository.findById(req.getModulo())
+                .orElseThrow(() -> new EntityNotFoundException("modulo not found"));
+        aula.setNumero(req.getNumero());
+        aula.setModulo(modulo);
         aulaRepository.save(aula);
         creaHorarios(aula.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(aula);
     }/*
     {
         "numero": 1,
-        "modulo":   {
-                    "id": 1
-                    }
+        "modulo": 1
     }
     */
 
