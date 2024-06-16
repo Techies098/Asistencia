@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import univsys.asistenciadocente.controller.Request.AsignaHorarioRequest;
 import univsys.asistenciadocente.controller.Request.GrupoRequest;
 import univsys.asistenciadocente.models.GrupoEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
@@ -72,7 +73,17 @@ public class GrupoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(grup);
     }
 
-    public void asignargrupo(Long idgrupo, Long idhorario) {
+    @Transactional
+    @PostMapping("/asignargrupo")
+    public ResponseEntity<?> asignargrupo(@RequestBody AsignaHorarioRequest req) {
+        HorarioEntity horario = horarioRepository.findById(req.getHorarioId()).orElseThrow(() -> new RuntimeException("Horario not found"));
+        GrupoEntity grupo = grupoRepository.findById(req.getGrupoId()).orElseThrow(() -> new RuntimeException("Grupo not found"));
+        horario.setGrupo(grupo);
+        horarioRepository.save(horario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(horario);
+    }
+
+    public void s(Long idgrupo, Long idhorario) {
         HorarioEntity horario = horarioRepository.findById(idhorario).orElseThrow(() -> new RuntimeException("Horario not found"));
         GrupoEntity grupo = grupoRepository.findById(idgrupo).orElseThrow(() -> new RuntimeException("Grupo not found"));
         horario.setGrupo(grupo);
