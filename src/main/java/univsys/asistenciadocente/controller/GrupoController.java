@@ -82,12 +82,4 @@ public class GrupoController {
         horarioRepository.save(horario);
         return ResponseEntity.status(HttpStatus.CREATED).body(horario);
     }
-
-    public void s(Long idgrupo, Long idhorario) {
-        HorarioEntity horario = horarioRepository.findById(idhorario).orElseThrow(() -> new RuntimeException("Horario not found"));
-        GrupoEntity grupo = grupoRepository.findById(idgrupo).orElseThrow(() -> new RuntimeException("Grupo not found"));
-        horario.setGrupo(grupo);
-        horarioRepository.save(horario);
-    }
-
 }
