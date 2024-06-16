@@ -16,6 +16,7 @@ import univsys.asistenciadocente.repositories.MateriaRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,15 +39,22 @@ public class GrupoController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> list() {
-        List<GrupoEntity> grupos = (List<GrupoEntity>) grupoRepository.findAll();
+        Iterable<GrupoEntity> grupos = grupoRepository.findAll();
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        for (GrupoEntity grupo : grupos) {//cada pate de data tendra grupo y horarios
+            List<HorarioEntity> horarios = horarioRepository.findByGrupoId(grupo.getId());
+            Map<String, Object> groupData = new HashMap<>();
+            groupData.put("grupo", grupo);
+            groupData.put("horarios", horarios);
+            dataList.add(groupData);
+        }
         Map<String, Object> response = new HashMap<>();
         response.put("status code", "200");
         response.put("mensaje", "lista de Grupos");
         response.put("fecha", LocalDate.now());
-        response.put("data", grupos);
+        response.put("data", dataList);
         return ResponseEntity.ok(response);
     }
-
 
     @Transactional
     @PostMapping("/store")
