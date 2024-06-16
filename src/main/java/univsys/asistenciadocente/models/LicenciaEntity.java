@@ -26,4 +26,7 @@ public class LicenciaEntity {
     private LocalDate inicio;
     @NotNull
     private LocalDate fin;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
