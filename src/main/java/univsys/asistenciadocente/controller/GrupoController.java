@@ -45,7 +45,11 @@ public class GrupoController {
         for (GrupoEntity grupo : grupos) {//cada pate de data tendra grupo y horarios
             List<HorarioEntity> horarios = horarioRepository.findByGrupoId(grupo.getId());
             Map<String, Object> groupData = new HashMap<>();
-            groupData.put("grupo", grupo);
+            groupData.put("id", grupo.getId());
+            groupData.put("nombre", grupo.getNombre());
+            groupData.put("periodo", grupo.getPeriodo());
+            groupData.put("materia", grupo.getMateria());
+            groupData.put("user", grupo.getUser());
             groupData.put("horarios", horarios);
             dataList.add(groupData);
         }
