@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -23,7 +24,7 @@ public class AsistenciaEntity {
     @NotBlank
     private String estado;
     @NotNull
-    private Date fecha;
+    private LocalDateTime fecha;
     @ManyToOne
     @JoinColumn(name = "horario_id")
     private HorarioEntity horario;

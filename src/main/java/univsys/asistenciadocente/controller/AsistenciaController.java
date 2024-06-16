@@ -15,6 +15,7 @@ import univsys.asistenciadocente.repositories.GrupoRepository;
 import univsys.asistenciadocente.repositories.HorarioRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @CrossOrigin
@@ -51,7 +52,7 @@ public class AsistenciaController {
         AsistenciaEntity asistencia = new AsistenciaEntity();
         asistencia.setEstado(req.getEstado());
         asistencia.setHorario(horario);
-        asistencia.setFecha(new Date());
+        asistencia.setFecha(LocalDateTime.now());
         asistenciaRepository.save(asistencia);
         return ResponseEntity.status(HttpStatus.CREATED).body(asistencia);
     }/*

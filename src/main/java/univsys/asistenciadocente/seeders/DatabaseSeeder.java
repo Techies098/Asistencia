@@ -57,10 +57,37 @@ public class DatabaseSeeder {
 
     }
 
+
     public void asistenciaSeed() {
-        seedAsist("Presente", 1L, 3);
-        seedAsist("Presente", 1L, 2);
-        seedAsist("Presente", 1L, 1);
+        presente5(1L);
+        presente5(1L);
+        licencia3_2(1321L);
+        licencia3_2(1322L);
+        presente5(2641L);
+        presente5(2642L);
+        falta5(4L);
+        falta5(5L);
+    }
+    public void falta5 (Long horarioId) {
+        seedAsist("Falta", horarioId, 5);
+        seedAsist("Falta", horarioId, 4);
+        seedAsist("Falta", horarioId, 3);
+        seedAsist("Falta", horarioId, 2);
+        seedAsist("Falta", horarioId, 1);
+    }
+    public void presente5 (Long horarioId){
+        seedAsist("Presente", horarioId, 5);
+        seedAsist("Presente", horarioId, 4);
+        seedAsist("Presente", horarioId, 3);
+        seedAsist("Presente", horarioId, 2);
+        seedAsist("Presente", horarioId, 1);
+    }
+    public void licencia3_2 (Long horarioId){
+        seedAsist("Licencia", horarioId, 5);
+        seedAsist("Licencia", horarioId, 4);
+        seedAsist("Presente", horarioId, 3);
+        seedAsist("Presente", horarioId, 2);
+        seedAsist("Presente", horarioId, 1);
     }
 
     public void seedAsist(String estado, Long horarioId, int dias) {
@@ -71,30 +98,28 @@ public class DatabaseSeeder {
         asistencia.setHorario(horario);
         LocalDate localDate = LocalDate.now().minusDays(dias);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, horario.getInicio());
-        Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
-        Date date = Date.from(instant);
-        asistencia.setFecha(date);
+        asistencia.setFecha(localDateTime);
         asistenciaRepository.save(asistencia);
     }
     public void horariogrupos (){
         asignargrupo(1L,1L);
         asignargrupo(1L,2L);
-        asignargrupo(1L,5281L);
-        asignargrupo(1L,5282L);
-        asignargrupo(1L,10561L);
-        asignargrupo(1L,10562L);
-        asignargrupo(2L,3L);
-        asignargrupo(2L,4L);
-        asignargrupo(2L,5283L);
-        asignargrupo(2L,5284L);
-        asignargrupo(2L,10563L);
-        asignargrupo(2L,10564L);
-        asignargrupo(3L,5L);
-        asignargrupo(3L,6L);
-        asignargrupo(3L,5285L);
-        asignargrupo(3L,5286L);
-        asignargrupo(3L,10565L);
-        asignargrupo(3L,10566L);
+        asignargrupo(1L,1321L);
+        asignargrupo(1L,1322L);
+        asignargrupo(1L,2641L);
+        asignargrupo(1L,2642L);
+        asignargrupo(15L,3L);
+        asignargrupo(15L,4L);
+        asignargrupo(15L,1323L);
+        asignargrupo(15L,1324L);
+        asignargrupo(15L,2643L);
+        asignargrupo(15L,2644L);
+        asignargrupo(10L,5L);
+        asignargrupo(10L,6L);
+        asignargrupo(10L,1325L);
+        asignargrupo(10L,1326L);
+        asignargrupo(10L,2645L);
+        asignargrupo(10L,2646L);
 
     }
 @Transactional
@@ -175,8 +200,8 @@ public class DatabaseSeeder {
     }
 
     public void seedAulas() {
-        for (Long moduloId = 1L; moduloId <= 10L; moduloId++) {
-            for (int aulaNumero = 1; aulaNumero <= 24; aulaNumero++) {
+        for (Long moduloId = 1L; moduloId <= 3L; moduloId++) {
+            for (int aulaNumero = 1; aulaNumero <= 20; aulaNumero++) {
                 aulaSeed(aulaNumero, moduloId);
             }
         }
@@ -191,20 +216,6 @@ public class DatabaseSeeder {
             aula.setCapacidad(40);
             aulaRepository.save(aula);
         }
-    }
-
-    public void seedModulos() {
-        moduloSeed(220);
-        moduloSeed(221);
-        moduloSeed(222);
-        moduloSeed(232);
-        moduloSeed(223);
-        moduloSeed(224);
-        moduloSeed(225);
-        moduloSeed(226);
-        moduloSeed(236);
-        moduloSeed(237);
-        moduloSeed(666);
     }
 
     public void CarreraMateriaSeeder() {
@@ -236,8 +247,11 @@ public class DatabaseSeeder {
             throw new RuntimeException(e);
         }
     }
-
-
+    public void seedModulos() {
+        moduloSeed(220);
+        moduloSeed(221);
+        moduloSeed(222);
+    }
     private void moduloSeed(int num) {
         ModuloEntity mod = new ModuloEntity();
         mod.setNumero(num);
@@ -283,16 +297,16 @@ public class DatabaseSeeder {
     }
 
     public void seedCarreras() {
-        carreraseed("Sistemas", "INF-204", 5L);
-        carreraseed("Redes", "INF-205", 5L);
-        carreraseed("Informatica", "INF-206", 5L);
+        carreraseed("Sistemas", "INF-204", 1L);
+        carreraseed("Redes", "INF-205", 1L);
+        carreraseed("Informatica", "INF-206", 1L);
         carreraseed("Industrial", "IND-102", 2L);
         carreraseed("Alimentos", "ALM-200", 2L);
         carreraseed("Electronica", "ELE-201", 2L);
-        carreraseed("Contaduria", "CON-300", 1L);
-        carreraseed("Medicina", "MED-207", 3L);
-        carreraseed("Enfermeria", "ENF-208", 3L);
-        carreraseed("Psicologia", "PSY-209", 4L);
+        carreraseed("Contaduria", "CON-300", 3L);
+        carreraseed("Medicina", "MED-207", 4L);
+        carreraseed("Enfermeria", "ENF-208", 4L);
+        carreraseed("Psicologia", "PSY-209", 5L);
         carreraseed("Derecho", "DER-255", 6L);
     }
 
@@ -309,13 +323,12 @@ public class DatabaseSeeder {
 
     public void seedFacultades() {
         List<String> nombresFacultades = new ArrayList<>();
-        nombresFacultades.add("Contaduria");
+        nombresFacultades.add("Ciencias de la Computacion");
         nombresFacultades.add("Ciencias Exactas");
+        nombresFacultades.add("Contaduria");
         nombresFacultades.add("Medicina");
         nombresFacultades.add("Humanidades");
-        nombresFacultades.add("Ciencias de la Computacion");
         nombresFacultades.add("Derecho");
-        nombresFacultades.add("Veterinaria");
         for (String nombre : nombresFacultades) {
             FacultadEntity facultad = new FacultadEntity();
             facultad.setName(nombre);
@@ -344,6 +357,7 @@ public class DatabaseSeeder {
         userSeed("Angela Carrasco", "Angy", "0000", "USER");
         userSeed("Anita Mendoza", "Amen", "0000", "USER");
         userSeed("Olga Botegga", "Obo", "0000", "USER");
+        userSeed("Daniel Mendoza", "Dame", "0000", "USER");
     }
 
     private void userSeed(String name, String nick, String password, String rol) {
