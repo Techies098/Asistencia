@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.models.MateriaEntity;
-import univsys.asistenciadocente.repositories.CarreraRepository;
 import univsys.asistenciadocente.repositories.MateriaRepository;
 
 import java.time.LocalDate;
@@ -17,8 +16,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/materia")
 public class MateriaController {
-    @Autowired
-    private CarreraRepository carreraRepository;
     @Autowired
     private MateriaRepository materiaRepository;
 
@@ -38,7 +35,7 @@ public class MateriaController {
     }
 
     @Transactional
-    @PostMapping("/materia/store")
+    @PostMapping("/store")
     public ResponseEntity<?> store(@RequestBody MateriaEntity materia) {
         materiaRepository.save(materia);
         return ResponseEntity.status(HttpStatus.CREATED).body(materia);
