@@ -1,5 +1,6 @@
 package univsys.asistenciadocente.seeders;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -37,6 +38,8 @@ public class DatabaseSeeder {
     private GrupoRepository grupoRepository;
     @Autowired
     private AsistenciaRepository asistenciaRepository;
+    @Autowired
+    private LicenciaRepository licenciaRepository;
 
     @EventListener
     @Transactional
@@ -53,10 +56,23 @@ public class DatabaseSeeder {
         GrupoSeeder();
         asistenciaSeed();
         horariogrupos();
-
+        licenciaSeeder();
+    }
+    public void licenciaSeeder(){
+        String inicio= String.valueOf(LocalDate.now().minusDays(5));
+        String fin= String.valueOf(LocalDate.now());
+        seedlicencia("Vacacion",inicio,fin,7L);
 
     }
-
+    public void seedlicencia (String razon, String inicio , String fin, Long userId){
+        LicenciaEntity licencia = new LicenciaEntity();
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        licencia.setRazon(razon);
+        licencia.setInicio(LocalDate.parse(inicio));
+        licencia.setFin(LocalDate.parse(fin));
+        licencia.setUser(user);
+        licenciaRepository.save(licencia);
+    }
 
     public void asistenciaSeed() {
         presente5(1L);
@@ -65,8 +81,14 @@ public class DatabaseSeeder {
         licencia3_2(1322L);
         presente5(2641L);
         presente5(2642L);
-        falta5(4L);
+        falta5(6L);
         falta5(5L);
+        licencia5(3L);
+        licencia5(4L);
+        licencia5(1323L);
+        licencia5(1324L);
+        licencia5(2643L);
+        licencia5(2644L);
     }
     public void falta5 (Long horarioId) {
         seedAsist("Falta", horarioId, 5);
@@ -89,6 +111,13 @@ public class DatabaseSeeder {
         seedAsist("Presente", horarioId, 2);
         seedAsist("Presente", horarioId, 1);
     }
+    public void licencia5 (Long horarioId){
+        seedAsist("Licencia", horarioId, 5);
+        seedAsist("Licencia", horarioId, 4);
+        seedAsist("Licencia", horarioId, 3);
+        seedAsist("Licencia", horarioId, 2);
+        seedAsist("Licencia", horarioId, 1);
+    }
 
     public void seedAsist(String estado, Long horarioId, int dias) {
         AsistenciaEntity asistencia = new AsistenciaEntity();
@@ -102,6 +131,7 @@ public class DatabaseSeeder {
         asistenciaRepository.save(asistencia);
     }
     public void horariogrupos (){
+        //Lunes mie, vie 7 a 8:30
         asignargrupo(1L,1L);
         asignargrupo(1L,2L);
         asignargrupo(1L,1321L);

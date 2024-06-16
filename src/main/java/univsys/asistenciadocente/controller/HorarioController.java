@@ -32,4 +32,5 @@ public class HorarioController {
         response.put("data", Horarios);
         return ResponseEntity.ok(response);
     }
+
 }
