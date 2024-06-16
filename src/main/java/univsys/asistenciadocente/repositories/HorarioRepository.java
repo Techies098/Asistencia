@@ -10,4 +10,5 @@ import java.util.List;
 public interface HorarioRepository extends CrudRepository<HorarioEntity,Long> {
     List<HorarioEntity> findByAulaId(Long aulaId);
     List<HorarioEntity> findByGrupoId(Long grupoId);
+    List<HorarioEntity> findByGrupoUserId(Long grupoId);
 }
