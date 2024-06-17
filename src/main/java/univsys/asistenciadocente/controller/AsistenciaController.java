@@ -7,11 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.AsistenciaRequest;
 import univsys.asistenciadocente.models.AsistenciaEntity;
-import univsys.asistenciadocente.models.AulaEntity;
-import univsys.asistenciadocente.models.GrupoEntity;
 import univsys.asistenciadocente.models.HorarioEntity;
 import univsys.asistenciadocente.repositories.AsistenciaRepository;
-import univsys.asistenciadocente.repositories.GrupoRepository;
 import univsys.asistenciadocente.repositories.HorarioRepository;
 
 import java.time.LocalDate;
@@ -25,12 +22,10 @@ public class AsistenciaController {
 
     private final AsistenciaRepository asistenciaRepository;
     private final HorarioRepository horarioRepository;
-    private final GrupoRepository grupoRepository;
 
-    public AsistenciaController(AsistenciaRepository asistenciaRepository, HorarioRepository horarioRepository, GrupoRepository grupoRepository) {
+    public AsistenciaController(AsistenciaRepository asistenciaRepository, HorarioRepository horarioRepository) {
         this.asistenciaRepository = asistenciaRepository;
         this.horarioRepository = horarioRepository;
-        this.grupoRepository = grupoRepository;
     }
 
     @GetMapping
@@ -64,9 +59,19 @@ public class AsistenciaController {
     @GetMapping("/grupo/{grupoId}")
     public ResponseEntity<Map<String, Object>> show(@PathVariable Long grupoId) {
         Map<String, Object> response = new HashMap<>();
-        List<AsistenciaEntity> asist = (List<AsistenciaEntity>) asistenciaRepository.findByHorarioGrupoId(grupoId);
+        List<AsistenciaEntity> asist =asistenciaRepository.findByHorarioGrupoId(grupoId);
         response.put("status code", "200");
         response.put("mensaje", "lista de asistencias del grupo"+grupoId);
+        response.put("fecha", LocalDate.now());
+        response.put("data", asist);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/docente/{docenteId}")
+    public ResponseEntity<Map<String, Object>> docente(@PathVariable Long docenteId) {
+        Map<String, Object> response = new HashMap<>();
+        List<AsistenciaEntity> asist = asistenciaRepository.findByHorarioGrupoUserId(docenteId);
+        response.put("status code", "200");
+        response.put("mensaje", "lista de asistencias del docente "+docenteId);
         response.put("fecha", LocalDate.now());
         response.put("data", asist);
         return ResponseEntity.ok(response);
