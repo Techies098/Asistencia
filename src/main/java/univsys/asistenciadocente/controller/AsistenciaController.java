@@ -55,6 +55,19 @@ public class AsistenciaController {
         asistencia.setHorario(horario);
         asistencia.setFecha(LocalDateTime.now());
         asistenciaRepository.save(asistencia);
+        Optional<HorarioEntity> Horarios2 = horarioRepository.findByGrupoUserId(req.getUserId())
+                .stream()
+                .filter(h -> horario.getFin().equals(h.getInicio()) && h.getAula().getId().equals(horario.getAula().getId()))
+                .findFirst();
+        if (Horarios2.isPresent()) {
+            HorarioEntity horario2 = Horarios2.get();
+            AsistenciaEntity asistencia2 = new AsistenciaEntity();
+            asistencia2.setEstado(req.getEstado());
+            asistencia2.setHorario(horario2);
+            asistencia2.setFecha(LocalDateTime.now());
+            asistenciaRepository.save(asistencia2);
+
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(asistencia);
     }
 
@@ -90,7 +103,7 @@ public class AsistenciaController {
     @GetMapping("/docente/{docenteId}")
     public ResponseEntity<Map<String, Object>> docente(@PathVariable Long docenteId) {
         Map<String, Object> response = new HashMap<>();
-        List<AsistenciaEntity> asist = asistenciaRepository.findByHorarioGrupoUserId(docenteId);
+        List<AsistenciaEntity> asist = asistenciaRepository.findByHorarioGrupoUserIdOrderByFechaAsc(docenteId);
         response.put("status code", "200");
         response.put("mensaje", "lista de asistencias del docente "+docenteId);
         response.put("fecha", LocalDate.now());

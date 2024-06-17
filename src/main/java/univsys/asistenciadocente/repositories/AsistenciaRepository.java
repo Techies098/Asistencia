@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface AsistenciaRepository extends CrudRepository<AsistenciaEntity,Long> {
     List<AsistenciaEntity> findByHorarioGrupoId(Long grupoId);
-    List<AsistenciaEntity> findByHorarioGrupoUserId(Long UserId);
+    List<AsistenciaEntity> findByHorarioGrupoUserIdOrderByFechaDesc(Long UserId);
+    List<AsistenciaEntity> findByHorarioGrupoUserIdOrderByFechaAsc(Long UserId);
 }
 

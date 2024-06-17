@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.LicenciaRequest;
 import univsys.asistenciadocente.models.*;
+import univsys.asistenciadocente.repositories.AsistenciaRepository;
+import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.LicenciaRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
@@ -22,10 +24,14 @@ public class LicenciaController {
 
     private final LicenciaRepository licenciaRepository;
     private final UserRepository userRepository;
+    private final HorarioRepository horarioRepository;
+    private final AsistenciaRepository asistenciaRepository;
 
-    public LicenciaController(LicenciaRepository licenciaRepository, UserRepository userRepository) {
+    public LicenciaController(LicenciaRepository licenciaRepository, UserRepository userRepository, HorarioRepository horarioRepository, AsistenciaRepository asistenciaRepository) {
         this.licenciaRepository = licenciaRepository;
         this.userRepository = userRepository;
+        this.horarioRepository = horarioRepository;
+        this.asistenciaRepository = asistenciaRepository;
     }
 
     @GetMapping
@@ -49,6 +55,21 @@ public class LicenciaController {
         licencia.setFin(LocalDate.parse(req.getFin()));
         licencia.setUser(user);
         licenciaRepository.save(licencia);
+
+        LocalDate start = licencia.getInicio();
+        LocalDate end = licencia.getFin();
+        Long userId = req.getUserId();
+        while (!start.isAfter(end)) {
+            List<HorarioEntity> horariosDelusuario = horarioRepository.findByGrupoUserId(userId);
+            for (HorarioEntity horario : horariosDelusuario) {
+                AsistenciaEntity asistencia = new AsistenciaEntity();
+                asistencia.setEstado("licencia");
+                asistencia.setHorario(horario);
+                asistencia.setFecha(start.atStartOfDay());
+                asistenciaRepository.save(asistencia);
+            }
+            start = start.plusDays(1); // Incrementamos el día
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(licencia);
     }
     @GetMapping("/docente/{docenteId}")
