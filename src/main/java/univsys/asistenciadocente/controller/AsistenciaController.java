@@ -1,6 +1,5 @@
 package univsys.asistenciadocente.controller;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import univsys.asistenciadocente.repositories.HorarioRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @CrossOrigin
@@ -38,19 +38,40 @@ public class AsistenciaController {
         response.put("data", asist);
         return ResponseEntity.ok(response);
     }
-
     @Transactional
     @PostMapping("/store")
     public ResponseEntity<?> store(@RequestBody AsistenciaRequest req) {
-        HorarioEntity horario = horarioRepository.findById(req.getHorario())
-                .orElseThrow(() -> new EntityNotFoundException("horario not found"));
+        LocalTime now = LocalTime.now();
+        Optional<HorarioEntity> maybeHorario = horarioRepository.findByGrupoUserId(req.getUserId())
+                .stream()
+                .filter(h -> now.isAfter(h.getInicio()) && now.isBefore(h.getFin()))
+                .findFirst();
+        if (!maybeHorario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No schedule found for the current time.");
+        }
+        HorarioEntity horario = maybeHorario.get();
         AsistenciaEntity asistencia = new AsistenciaEntity();
         asistencia.setEstado(req.getEstado());
         asistencia.setHorario(horario);
         asistencia.setFecha(LocalDateTime.now());
         asistenciaRepository.save(asistencia);
         return ResponseEntity.status(HttpStatus.CREATED).body(asistencia);
-    }/*
+    }
+
+
+    //    @Transactional
+//    @PostMapping("/store")
+//    public ResponseEntity<?> store(@RequestBody AsistenciaRequest req) {
+//        List<HorarioEntity> horarios = horarioRepository.findByGrupoUserId(req.getUserId());
+//
+//        AsistenciaEntity asistencia = new AsistenciaEntity();
+//        asistencia.setEstado(req.getEstado());
+//        asistencia.setHorario(horario);
+//        asistencia.setFecha(LocalDateTime.now());
+//        asistenciaRepository.save(asistencia);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(asistencia);
+//    }
+/*
     {
     "estado": "Presente",
     "horario": 1
