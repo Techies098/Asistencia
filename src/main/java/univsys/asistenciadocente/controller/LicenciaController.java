@@ -56,7 +56,7 @@ public class LicenciaController {
         Map<String, Object> response = new HashMap<>();
         List<LicenciaEntity> lic = licenciaRepository.findByUserId(docenteId);
         response.put("status code", "200");
-        response.put("mensaje", "lista de asistencias del docente "+docenteId);
+        response.put("mensaje", "lista de licencias del docente "+docenteId);
         response.put("fecha", LocalDate.now());
         response.put("data", lic);
         return ResponseEntity.ok(response);
