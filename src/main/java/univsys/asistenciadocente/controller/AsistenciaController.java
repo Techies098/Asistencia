@@ -90,7 +90,7 @@ public class AsistenciaController {
     @GetMapping("/docente/{docenteId}")
     public ResponseEntity<Map<String, Object>> docente(@PathVariable Long docenteId) {
         Map<String, Object> response = new HashMap<>();
-        List<AsistenciaEntity> asist = asistenciaRepository.findByHorarioGrupoUserId(docenteId);
+        List<AsistenciaEntity> asist = asistenciaRepository.findByHorarioGrupoUserIdOrderByFechaAsc(docenteId);
         response.put("status code", "200");
         response.put("mensaje", "lista de asistencias del docente "+docenteId);
         response.put("fecha", LocalDate.now());

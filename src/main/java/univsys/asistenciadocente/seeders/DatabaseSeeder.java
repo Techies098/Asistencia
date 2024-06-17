@@ -76,7 +76,7 @@ public class DatabaseSeeder {
 
     public void asistenciaSeed() {
         presente5(1L);
-        presente5(1L);
+        presente5(2L);
         licencia3_2(1321L);
         licencia3_2(1322L);
         presente5(2641L);
