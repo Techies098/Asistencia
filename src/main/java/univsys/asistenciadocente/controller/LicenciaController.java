@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.LicenciaRequest;
-import univsys.asistenciadocente.models.FacultadEntity;
-import univsys.asistenciadocente.models.HorarioEntity;
-import univsys.asistenciadocente.models.LicenciaEntity;
-import univsys.asistenciadocente.models.UserEntity;
+import univsys.asistenciadocente.models.*;
 import univsys.asistenciadocente.repositories.LicenciaRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
@@ -53,5 +50,15 @@ public class LicenciaController {
         licencia.setUser(user);
         licenciaRepository.save(licencia);
         return ResponseEntity.status(HttpStatus.CREATED).body(licencia);
+    }
+    @GetMapping("/docente/{docenteId}")
+    public ResponseEntity<Map<String, Object>> docente(@PathVariable Long docenteId) {
+        Map<String, Object> response = new HashMap<>();
+        List<LicenciaEntity> lic = licenciaRepository.findByUserId(docenteId);
+        response.put("status code", "200");
+        response.put("mensaje", "lista de licencias del docente "+docenteId);
+        response.put("fecha", LocalDate.now());
+        response.put("data", lic);
+        return ResponseEntity.ok(response);
     }
 }
