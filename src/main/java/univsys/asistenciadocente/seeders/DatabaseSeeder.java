@@ -1,10 +1,9 @@
 package univsys.asistenciadocente.seeders;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import univsys.asistenciadocente.models.*;
@@ -41,22 +40,24 @@ public class DatabaseSeeder {
     @Autowired
     private LicenciaRepository licenciaRepository;
 
-    @EventListener
+    @PostConstruct
     @Transactional
-    public void seed(ContextRefreshedEvent event) {
-        seedFacultades();
-        seedRoleTable();
-        seedUsersTable();
-        seedCarreras();
-        SeedMaterias();
-        seedModulos();
-        seedAulas();
-        CarreraMateriaSeeder();
-        semana();
-        GrupoSeeder();
-        asistenciaSeed();
-        horariogrupos();
-        licenciaSeeder();
+    public void seed() {
+        if (facultadRepository.count() == 0) {
+            seedFacultades();
+            seedRoleTable();
+            seedUsersTable();
+            seedCarreras();
+            SeedMaterias();
+            seedModulos();
+            seedAulas();
+            CarreraMateriaSeeder();
+            semana();
+            GrupoSeeder();
+            asistenciaSeed();
+            horariogrupos();
+            licenciaSeeder();
+        }
     }
     public void licenciaSeeder(){
         String inicio= String.valueOf(LocalDate.now().minusDays(5));
@@ -77,46 +78,23 @@ public class DatabaseSeeder {
     public void asistenciaSeed() {
         presente5(1L);
         presente5(2L);
-        licencia3_2(1321L);
-        licencia3_2(1322L);
-        presente5(2641L);
-        presente5(2642L);
-        falta5(6L);
-        falta5(5L);
         licencia5(3L);
         licencia5(4L);
-        licencia5(1323L);
-        licencia5(1324L);
-        licencia5(2643L);
-        licencia5(2644L);
-    }
-    public void falta5 (Long horarioId) {
-        seedAsist("Falta", horarioId, 5);
-        seedAsist("Falta", horarioId, 4);
-        seedAsist("Falta", horarioId, 3);
-        seedAsist("Falta", horarioId, 2);
-        seedAsist("Falta", horarioId, 1);
     }
     public void presente5 (Long horarioId){
         seedAsist("Presente", horarioId, 5);
         seedAsist("Presente", horarioId, 4);
         seedAsist("Presente", horarioId, 3);
-        seedAsist("Presente", horarioId, 2);
-        seedAsist("Presente", horarioId, 1);
     }
     public void licencia3_2 (Long horarioId){
         seedAsist("Licencia", horarioId, 5);
         seedAsist("Licencia", horarioId, 4);
         seedAsist("Presente", horarioId, 3);
-        seedAsist("Presente", horarioId, 2);
-        seedAsist("Presente", horarioId, 1);
     }
     public void licencia5 (Long horarioId){
         seedAsist("Licencia", horarioId, 5);
         seedAsist("Licencia", horarioId, 4);
         seedAsist("Licencia", horarioId, 3);
-        seedAsist("Licencia", horarioId, 2);
-        seedAsist("Licencia", horarioId, 1);
     }
 
     public void seedAsist(String estado, Long horarioId, int dias) {
@@ -134,22 +112,10 @@ public class DatabaseSeeder {
         //Lunes mie, vie 7 a 8:30
         asignargrupo(1L,1L);
         asignargrupo(1L,2L);
-        asignargrupo(1L,1321L);
-        asignargrupo(1L,1322L);
-        asignargrupo(1L,2641L);
-        asignargrupo(1L,2642L);
-        asignargrupo(15L,3L);
-        asignargrupo(15L,4L);
-        asignargrupo(15L,1323L);
-        asignargrupo(15L,1324L);
-        asignargrupo(15L,2643L);
-        asignargrupo(15L,2644L);
-        asignargrupo(10L,5L);
-        asignargrupo(10L,6L);
-        asignargrupo(10L,1325L);
-        asignargrupo(10L,1326L);
-        asignargrupo(10L,2645L);
-        asignargrupo(10L,2646L);
+        asignargrupo(2L,3L);
+        asignargrupo(2L,4L);
+        asignargrupo(2L,5L);
+        asignargrupo(3L,6L);
 
     }
     @Transactional
@@ -168,15 +134,6 @@ public class DatabaseSeeder {
         seedGrupo("NW", "1-2024", 2L, 6L);
         seedGrupo("SC", "1-2024", 2L, 6L);
         seedGrupo("SA", "1-2024", 2L, 7L);
-        seedGrupo("SB", "1-2024", 2L, 7L);
-        seedGrupo("NW", "2-2023", 1L, 4L);
-        seedGrupo("SC", "2-2023", 1L, 4L);
-        seedGrupo("SA", "2-2023", 1L, 5L);
-        seedGrupo("SB", "2-2023", 1L, 5L);
-        seedGrupo("NW", "2-2023", 2L, 6L);
-        seedGrupo("SC", "2-2023", 2L, 6L);
-        seedGrupo("SA", "2-2023", 2L, 7L);
-        seedGrupo("SB", "3-2023", 2L, 7L);
 
     }
 
@@ -207,11 +164,6 @@ public class DatabaseSeeder {
             horarioSeed(aulaId, "09:15", "10:00",dia);
             horarioSeed(aulaId, "10:00", "10:45",dia);
             horarioSeed(aulaId, "10:45", "11:30",dia);
-            horarioSeed(aulaId, "11:30", "12:15",dia);
-            horarioSeed(aulaId, "12:15", "13:00",dia);
-            horarioSeed(aulaId, "13:45", "14:30",dia);
-            horarioSeed(aulaId, "14:30", "15:15",dia);
-            horarioSeed(aulaId, "15:15", "16:00",dia);
         }
     }
 
@@ -230,8 +182,8 @@ public class DatabaseSeeder {
     }
 
     public void seedAulas() {
-        for (Long moduloId = 1L; moduloId <= 3L; moduloId++) {
-            for (int aulaNumero = 1; aulaNumero <= 20; aulaNumero++) {
+        for (Long moduloId = 1L; moduloId <= 2L; moduloId++) {
+            for (int aulaNumero = 1; aulaNumero <= 3; aulaNumero++) {
                 aulaSeed(aulaNumero, moduloId);
             }
         }
@@ -249,17 +201,11 @@ public class DatabaseSeeder {
     }
 
     public void CarreraMateriaSeeder() {
-        for (int i = 1; i < 17; i++) {
+        for (int i = 1; i < 6; i++) {
             Long materia = (long) i;
             carreraMateriaSeed(1 + i / 5, 1L, materia);
             carreraMateriaSeed(1 + i / 5, 2L, materia);
             carreraMateriaSeed(1 + i / 5, 3L, materia);
-        }
-        for (int i = 1; i < 11; i++) {
-            Long materia = (long) i + 16;
-            carreraMateriaSeed(1 + i / 5, 4L, materia);
-            carreraMateriaSeed(1 + i / 5, 5L, materia);
-            carreraMateriaSeed(1 + i / 5, 6L, materia);
         }
     }
 
@@ -306,17 +252,7 @@ public class DatabaseSeeder {
         materiaseed("Programacion Ensamblador", "INF-333");
         materiaseed("Estructuras de Datos I", "INF-220");
         materiaseed("Estructuras de Datos II", "INF-310");
-        //industrial
-        materiaseed("Algebra I", "MAT-100");
-        materiaseed("Dibujo Tecnico I", "MEC-101");
-        materiaseed("Dibujo Tecnico II", "MEC-103");
-        materiaseed("Quimica General", "QMC-100");
-        materiaseed("Quimica Organica I", "QMC-200");
-        materiaseed("Fisico-Quimica I", "QMC-206");
-        materiaseed("Probabilidad y Estadistica", "IND-110");
-        materiaseed("Informatica I", "INF-243");
-        materiaseed("teoria de Circuitos I", "ELT-211");
-        materiaseed("teoria de Circuitos II", "ELT-311");
+
     }
 
     private void materiaseed(String nombreMateria, String siglaMateria) {
