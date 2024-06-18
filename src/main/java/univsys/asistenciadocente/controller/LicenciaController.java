@@ -6,10 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univsys.asistenciadocente.controller.Request.LicenciaRequest;
-import univsys.asistenciadocente.models.FacultadEntity;
-import univsys.asistenciadocente.models.HorarioEntity;
-import univsys.asistenciadocente.models.LicenciaEntity;
-import univsys.asistenciadocente.models.UserEntity;
+import univsys.asistenciadocente.models.*;
+import univsys.asistenciadocente.repositories.AsistenciaRepository;
+import univsys.asistenciadocente.repositories.HorarioRepository;
 import univsys.asistenciadocente.repositories.LicenciaRepository;
 import univsys.asistenciadocente.repositories.UserRepository;
 
@@ -25,10 +24,14 @@ public class LicenciaController {
 
     private final LicenciaRepository licenciaRepository;
     private final UserRepository userRepository;
+    private final HorarioRepository horarioRepository;
+    private final AsistenciaRepository asistenciaRepository;
 
-    public LicenciaController(LicenciaRepository licenciaRepository, UserRepository userRepository) {
+    public LicenciaController(LicenciaRepository licenciaRepository, UserRepository userRepository, HorarioRepository horarioRepository, AsistenciaRepository asistenciaRepository) {
         this.licenciaRepository = licenciaRepository;
         this.userRepository = userRepository;
+        this.horarioRepository = horarioRepository;
+        this.asistenciaRepository = asistenciaRepository;
     }
 
     @GetMapping
@@ -52,6 +55,31 @@ public class LicenciaController {
         licencia.setFin(LocalDate.parse(req.getFin()));
         licencia.setUser(user);
         licenciaRepository.save(licencia);
+
+        LocalDate start = licencia.getInicio();
+        LocalDate end = licencia.getFin();
+        Long userId = req.getUserId();
+        while (!start.isAfter(end)) {
+            List<HorarioEntity> horariosDelusuario = horarioRepository.findByGrupoUserId(userId);
+            for (HorarioEntity horario : horariosDelusuario) {
+                AsistenciaEntity asistencia = new AsistenciaEntity();
+                asistencia.setEstado("licencia");
+                asistencia.setHorario(horario);
+                asistencia.setFecha(start.atStartOfDay());
+                asistenciaRepository.save(asistencia);
+            }
+            start = start.plusDays(1); // Incrementamos el día
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(licencia);
+    }
+    @GetMapping("/docente/{docenteId}")
+    public ResponseEntity<Map<String, Object>> docente(@PathVariable Long docenteId) {
+        Map<String, Object> response = new HashMap<>();
+        List<LicenciaEntity> lic = licenciaRepository.findByUserId(docenteId);
+        response.put("status code", "200");
+        response.put("mensaje", "lista de licencias del docente "+docenteId);
+        response.put("fecha", LocalDate.now());
+        response.put("data", lic);
+        return ResponseEntity.ok(response);
     }
 }
