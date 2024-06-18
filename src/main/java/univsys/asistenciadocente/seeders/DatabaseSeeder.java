@@ -208,10 +208,6 @@ public class DatabaseSeeder {
             horarioSeed(aulaId, "10:00", "10:45",dia);
             horarioSeed(aulaId, "10:45", "11:30",dia);
             horarioSeed(aulaId, "11:30", "12:15",dia);
-            horarioSeed(aulaId, "12:15", "13:00",dia);
-            horarioSeed(aulaId, "13:45", "14:30",dia);
-            horarioSeed(aulaId, "14:30", "15:15",dia);
-            horarioSeed(aulaId, "15:15", "16:00",dia);
         }
     }
 
@@ -230,8 +226,8 @@ public class DatabaseSeeder {
     }
 
     public void seedAulas() {
-        for (Long moduloId = 1L; moduloId <= 3L; moduloId++) {
-            for (int aulaNumero = 1; aulaNumero <= 20; aulaNumero++) {
+        for (Long moduloId = 1L; moduloId <= 2L; moduloId++) {
+            for (int aulaNumero = 1; aulaNumero <= 10; aulaNumero++) {
                 aulaSeed(aulaNumero, moduloId);
             }
         }
@@ -249,17 +245,11 @@ public class DatabaseSeeder {
     }
 
     public void CarreraMateriaSeeder() {
-        for (int i = 1; i < 17; i++) {
+        for (int i = 1; i < 10; i++) {
             Long materia = (long) i;
             carreraMateriaSeed(1 + i / 5, 1L, materia);
             carreraMateriaSeed(1 + i / 5, 2L, materia);
             carreraMateriaSeed(1 + i / 5, 3L, materia);
-        }
-        for (int i = 1; i < 11; i++) {
-            Long materia = (long) i + 16;
-            carreraMateriaSeed(1 + i / 5, 4L, materia);
-            carreraMateriaSeed(1 + i / 5, 5L, materia);
-            carreraMateriaSeed(1 + i / 5, 6L, materia);
         }
     }
 
